@@ -1,0 +1,53 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card-signup">
+        <div class="text-center">
+          <h1>Sign Up</h1>
+          <h6>Register yourself</h6>
+        </div>
+        <form [formGroup]="signupForm" (ngSubmit)="signUp()">
+          <div class="mb-3">
+            <label for="email" class="form-label">Email address</label>
+            <input
+              formControlName="email"
+              type="email"
+              class="form-control"
+              id="email"
+              aria-describedby="emailHelp"
+            />
+            <div id="emailHelp" class="form-text">
+              We'll never share your email with anyone else.
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            <input
+              formControlName="password"
+              type="password"
+              class="form-control"
+              id="password"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="password" class="form-label">Repeat password</label>
+            <input
+              formControlName="copyPassword"
+              type="password"
+              class="form-control"
+              id="copyPassword"
+            />
+          </div>
+          <div class="mt-2">
+            <button type="submit" class="btn btn-primary">Sign up</button>
+          </div>
+        </form>
+        <div class="mt-2">
+          <a class="signup-link mt-2" routerLink="/auth/login"
+            >Have account already? Click here to login</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

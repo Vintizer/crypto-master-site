@@ -1,0 +1,30 @@
+.card-login,
+.card-signup {
+  border: none;
+  width: 500px;
+  padding: 40px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-100px, 100px);
+  background: rgb(63, 144, 202);
+  background: linear-gradient(
+    135deg,
+    rgb(39, 124, 185) 0%,
+    rgb(80, 128, 216) 100%
+  );
+}
+.card-login h1,
+.card-signup h1,
+h6 {
+  color: #fff;
+}
+label,
+#emailHelp {
+  color: #fff;
+}
+
+.login-link,
+.signup-link {
+  color: #fff;
+}
