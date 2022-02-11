@@ -2,9 +2,7 @@ import { ForgetPassComponent } from 'src/app/auth/components/forget-pass/forget-
 import { LoginComponent } from 'src/app/auth/components/login/login.component';
 import { NewPasswordComponent } from 'src/app/auth/components/new-password/new-password.component';
 import { SignupComponent } from 'src/app/auth/components/signup/signup.component';
-import { GetCurrentUserEffect } from 'src/app/auth/store/effects/getCurrentUser.effect';
-import { LoginEffect } from 'src/app/auth/store/effects/login.effect';
-import { RegisterEffect } from 'src/app/auth/store/effects/register.effect';
+import { AuthService } from 'src/app/auth/services/auth.service';
 import { reducers } from 'src/app/auth/store/reducers';
 
 import { CommonModule } from '@angular/common';
@@ -13,6 +11,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
+
+import { ForgetPasswordEffect } from './store/effects/forgetPassword.effect';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,11 +33,9 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     StoreModule.forFeature('auth', reducers),
-    EffectsModule.forFeature([
-      RegisterEffect,
-      LoginEffect,
-      GetCurrentUserEffect,
-    ]),
+    EffectsModule.forFeature([ForgetPasswordEffect]),
   ],
+
+  providers: [AuthService],
 })
 export class AuthModule {}

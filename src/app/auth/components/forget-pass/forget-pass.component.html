@@ -6,7 +6,7 @@
           <h1>Reset password</h1>
           <h6>Please enter email to recovery password</h6>
         </div>
-        <form [formGroup]="forgetForm" (ngSubmit)="forget()">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label"
               >Email address</label
