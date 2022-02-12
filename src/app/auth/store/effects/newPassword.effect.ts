@@ -9,27 +9,39 @@ import {
   forgetPasswordAction,
   forgetPasswordSuccessAction,
 } from '../actions/forgetPassword.action';
-import { forgetPasswordFailureAction } from './../actions/forgetPassword.action';
+import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
+import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
+import {
+  newPasswordAction,
+  newPasswordSuccessAction,
+  newPasswordFailureAction,
+} from './../actions/newPassword.action';
+import { NewPasswordInterface } from './../../types/newPassword.interface';
+import {
+  loginAction,
+  loginFailureAction,
+  loginSuccessAction,
+} from './../actions/login.action';
 
 @Injectable()
-export class ForgetPasswordEffect {
-  forgetPassword$ = createEffect((): any =>
+export class NewPasswordEffect {
+  newPassword$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(forgetPasswordAction),
+      ofType(newPasswordAction),
       switchMap(({ request }) => {
-        return this.authService.forgetPassword(request).pipe(
-          map((isSuccess) => {
-            if (isSuccess) {
-              forgetPasswordSuccessAction();
+        return this.authService.newPassword(request).pipe(
+          map((isPasswordReset: boolean) => {
+            if (isPasswordReset) {
+              newPasswordSuccessAction();
             } else {
-              forgetPasswordFailureAction({
+              newPasswordFailureAction({
                 errors: { error: ['unknown error'] },
               });
             }
           }),
           catchError((errorResponse: HttpErrorResponse) => {
             return of(
-              forgetPasswordFailureAction({
+              newPasswordFailureAction({
                 errors: errorResponse.error.errors,
               })
             );

@@ -2,11 +2,6 @@ import { createReducer, on, Action } from '@ngrx/store';
 
 import { AuthStateInterface } from 'src/app/auth/types/authState.interface';
 import {
-  registerAction,
-  registerSuccessAction,
-  registerFailureAction,
-} from 'src/app/auth/store/actions/register.action';
-import {
   loginAction,
   loginSuccessAction,
   loginFailureAction,
@@ -16,6 +11,16 @@ import {
   forgetPasswordFailureAction,
   forgetPasswordSuccessAction,
 } from './actions/forgetPassword.action';
+import {
+  newPasswordAction,
+  newPasswordSuccessAction,
+  newPasswordFailureAction,
+} from './actions/newPassword.action';
+import {
+  signupAction,
+  signupSuccessAction,
+  signupFailureAction,
+} from './actions/signup.action';
 import {
   getCurrentUserAction,
   getCurrentUserSuccessAction,
@@ -33,7 +38,7 @@ const initialState: AuthStateInterface = {
 const authReducer = createReducer(
   initialState,
   on(
-    registerAction,
+    signupAction,
     (state): AuthStateInterface => ({
       ...state,
       isSubmitting: true,
@@ -41,7 +46,7 @@ const authReducer = createReducer(
     })
   ),
   on(
-    registerSuccessAction,
+    signupSuccessAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isSubmitting: false,
@@ -50,7 +55,7 @@ const authReducer = createReducer(
     })
   ),
   on(
-    registerFailureAction,
+    signupFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isSubmitting: false,
@@ -97,8 +102,31 @@ const authReducer = createReducer(
       currentUser: action.currentUser,
     })
   ),
+  on(loginFailureAction, (state, action): AuthStateInterface => {
+    console.log('action: ', action);
+    return {
+      ...state,
+      isSubmitting: false,
+      validationErrors: action.errors,
+    };
+  }),
   on(
-    loginFailureAction,
+    newPasswordAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isSubmitting: true,
+      validationErrors: null,
+    })
+  ),
+  on(
+    newPasswordSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isSubmitting: false,
+    })
+  ),
+  on(
+    newPasswordFailureAction,
     (state, action): AuthStateInterface => ({
       ...state,
       isSubmitting: false,

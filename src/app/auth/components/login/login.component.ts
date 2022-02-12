@@ -3,6 +3,15 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { Store, select } from '@ngrx/store';
+import { Observable } from 'rxjs';
+import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.interface';
+import { LoginRequestInterface } from './../../types/loginRequest.interface';
+import { loginAction } from './../../store/actions/login.action';
+import {
+  validationErrorsSelector,
+  isSubmittingSelector,
+} from './../../store/selectors';
 
 @Component({
   selector: 'app-login',
@@ -10,28 +19,30 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent implements OnInit {
-  public loginForm!: FormGroup;
-  constructor(
-    private formBuilder: FormBuilder,
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  public form: FormGroup;
+  public isSubmitting$: Observable<boolean>;
+  public backendErrors$: Observable<BackendErrorsInterface | null>;
+  constructor(private formBuilder: FormBuilder, private store: Store) {}
 
   ngOnInit(): void {
-    this.loginForm = this.formBuilder.group({
+    this.initializeForm();
+    this.initializeValues();
+  }
+
+  initializeForm() {
+    this.form = this.formBuilder.group({
       email: [''],
       password: [''],
     });
   }
-  login() {
-    this.http
-      .post(`${environment.apiUrl}/login`, this.loginForm.value)
-      .subscribe(
-        (res) => {
-          this.loginForm.reset();
-          this.router.navigate(['login']);
-        },
-        (error) => console.log(error)
-      );
+
+  initializeValues(): void {
+    this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
+    this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+  }
+
+  onSubmit() {
+    const request: LoginRequestInterface = this.form.value;
+    this.store.dispatch(loginAction({ request }));
   }
 }

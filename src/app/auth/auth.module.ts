@@ -13,6 +13,9 @@ import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
 import { ForgetPasswordEffect } from './store/effects/forgetPassword.effect';
+import { LoginEffect } from './store/effects/login.effect';
+import { NewPasswordEffect } from './store/effects/newPassword.effect';
+import { SignupEffect } from './store/effects/signup.effect';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -33,7 +36,12 @@ const routes: Routes = [
     RouterModule.forChild(routes),
     ReactiveFormsModule,
     StoreModule.forFeature('auth', reducers),
-    EffectsModule.forFeature([ForgetPasswordEffect]),
+    EffectsModule.forFeature([
+      ForgetPasswordEffect,
+      LoginEffect,
+      NewPasswordEffect,
+      SignupEffect,
+    ]),
   ],
 
   providers: [AuthService],

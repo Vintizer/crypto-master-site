@@ -6,7 +6,7 @@
           <h1>Login</h1>
           <h6>Please enter email and password</h6>
         </div>
-        <form [formGroup]="loginForm" (ngSubmit)="login()">
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label"
               >Email address</label
@@ -46,7 +46,7 @@
             <button type="submit" class="btn btn-primary">Login</button>
           </div>
           <div class="mt-2">
-            <a class="login-link mt-2" routerLink="/auth/signup"
+            <a class="login-link mt-2" routerLink="/signup"
               >New user? Click to signup</a
             >
           </div>

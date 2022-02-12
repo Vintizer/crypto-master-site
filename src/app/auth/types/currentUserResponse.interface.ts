@@ -1,9 +1,7 @@
-export interface CurrentUserInterface {
+export interface CurrentUserResponseInterface {
   email: string;
   id: string;
   isActivated: boolean;
   exchanges: string;
   subscribedOn: string;
-  accessToken: string;
-  refreshToken: string;
 }

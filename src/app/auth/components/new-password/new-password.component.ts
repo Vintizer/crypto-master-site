@@ -3,6 +3,15 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import { Store, select } from '@ngrx/store';
+import { BackendErrorsInterface } from './../../../shared/types/backendErrors.interface';
+import { Observable } from 'rxjs';
+import {
+  validationErrorsSelector,
+  isSubmittingSelector,
+} from './../../store/selectors';
+import { NewPasswordInterface } from './../../types/newPassword.interface';
+import { newPasswordAction } from './../../store/actions/newPassword.action';
 
 @Component({
   selector: 'app-new-password',
@@ -10,29 +19,32 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./new-password.component.scss'],
 })
 export class NewPasswordComponent implements OnInit {
-  public newPasswordForm!: FormGroup;
-  constructor(
-    private formBuilder: FormBuilder,
-    private http: HttpClient,
-    private router: Router
-  ) {}
+  public form: FormGroup;
+  public isSubmitting$: Observable<boolean>;
+  public backendErrors$: Observable<BackendErrorsInterface | null>;
+  constructor(private formBuilder: FormBuilder, private store: Store) {}
 
   ngOnInit(): void {
-    this.newPasswordForm = this.formBuilder.group({
+    this.initializeForm();
+    this.initializeValues();
+  }
+
+  initializeForm() {
+    this.form = this.formBuilder.group({
       password: [''],
       copyPassword: [''],
     });
   }
-  newPassword() {
-    // TODO validate
-    this.http
-      .post(`${environment.apiUrl}/newPassword`, this.newPasswordForm.value)
-      .subscribe(
-        (res) => {
-          this.newPasswordForm.reset();
-          this.router.navigate(['login']);
-        },
-        (error) => console.log(error)
-      );
+
+  initializeValues(): void {
+    this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
+    this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+  }
+
+  onSubmit() {
+    const request: NewPasswordInterface = this.form.value;
+    console.log('this.form.value: ', this.form.value);
+    console.log('request: ', request);
+    this.store.dispatch(newPasswordAction({ request }));
   }
 }

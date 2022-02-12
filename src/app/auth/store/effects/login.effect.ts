@@ -9,27 +9,28 @@ import {
   forgetPasswordAction,
   forgetPasswordSuccessAction,
 } from '../actions/forgetPassword.action';
-import { forgetPasswordFailureAction } from './../actions/forgetPassword.action';
+import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
+import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
+import {
+  loginAction,
+  loginFailureAction,
+  loginSuccessAction,
+} from './../actions/login.action';
 
 @Injectable()
-export class ForgetPasswordEffect {
-  forgetPassword$ = createEffect((): any =>
+export class LoginEffect {
+  login$ = createEffect((): any =>
     this.actions$.pipe(
-      ofType(forgetPasswordAction),
+      ofType(loginAction),
       switchMap(({ request }) => {
-        return this.authService.forgetPassword(request).pipe(
-          map((isSuccess) => {
-            if (isSuccess) {
-              forgetPasswordSuccessAction();
-            } else {
-              forgetPasswordFailureAction({
-                errors: { error: ['unknown error'] },
-              });
-            }
-          }),
+        return this.authService.login(request).pipe(
+          map((currentUser: CurrentUserInterface) =>
+            loginSuccessAction({ currentUser })
+          ),
           catchError((errorResponse: HttpErrorResponse) => {
+            console.log('errorResponse: ', errorResponse);
             return of(
-              forgetPasswordFailureAction({
+              loginFailureAction({
                 errors: errorResponse.error.errors,
               })
             );

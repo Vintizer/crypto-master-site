@@ -1,6 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { select, Store } from '@ngrx/store';
@@ -19,12 +17,7 @@ export class ForgetPassComponent implements OnInit {
   public form: FormGroup;
   public isSubmitting$: Observable<boolean>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
-  constructor(
-    private formBuilder: FormBuilder,
-    private http: HttpClient,
-    private store: Store,
-    private router: Router
-  ) {}
+  constructor(private formBuilder: FormBuilder, private store: Store) {}
 
   ngOnInit(): void {
     this.initializeForm();

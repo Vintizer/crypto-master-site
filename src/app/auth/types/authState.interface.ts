@@ -1,5 +1,6 @@
-import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
 import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.interface';
+import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
+import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
 
 export interface AuthStateInterface {
   isSubmitting: boolean;

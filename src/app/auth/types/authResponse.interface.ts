@@ -1,5 +1,7 @@
-import {CurrentUserInterface} from 'src/app/shared/types/currentUser.interface'
+import { CurrentUserResponseInterface } from './currentUserResponse.interface';
 
 export interface AuthResponseInterface {
-  user: CurrentUserInterface
+  accessToken: string;
+  refreshToken: string;
+  user: CurrentUserResponseInterface;
 }
