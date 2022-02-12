@@ -1,17 +1,20 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder } from '@angular/forms';
-import { environment } from 'src/environments/environment';
-import { Store, select } from '@ngrx/store';
-import { BackendErrorsInterface } from './../../../shared/types/backendErrors.interface';
 import { Observable } from 'rxjs';
+import { isLoggedInSelector } from 'src/app/auth/store/selectors';
+import { environment } from 'src/environments/environment';
+
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+
+import { BackendErrorsInterface } from '../../../shared/types/backendErrors.interface';
+import { newPasswordAction } from '../../store/actions/newPassword.action';
 import {
-  validationErrorsSelector,
   isSubmittingSelector,
-} from './../../store/selectors';
-import { NewPasswordInterface } from './../../types/newPassword.interface';
-import { newPasswordAction } from './../../store/actions/newPassword.action';
+  validationErrorsSelector,
+} from '../../store/selectors';
+import { NewPasswordInterface } from '../../types/newPassword.interface';
 
 @Component({
   selector: 'app-new-password',
@@ -21,12 +24,18 @@ import { newPasswordAction } from './../../store/actions/newPassword.action';
 export class NewPasswordComponent implements OnInit {
   public form: FormGroup;
   public isSubmitting$: Observable<boolean>;
+  public isLoggedIn$: Observable<boolean | null>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
-  constructor(private formBuilder: FormBuilder, private store: Store) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.initializeValues();
+    this.subscribe();
   }
 
   initializeForm() {
@@ -39,6 +48,7 @@ export class NewPasswordComponent implements OnInit {
   initializeValues(): void {
     this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
 
   onSubmit() {
@@ -46,5 +56,12 @@ export class NewPasswordComponent implements OnInit {
     console.log('this.form.value: ', this.form.value);
     console.log('request: ', request);
     this.store.dispatch(newPasswordAction({ request }));
+  }
+  subscribe() {
+    this.isLoggedIn$.subscribe((isLogged) => {
+      if (isLogged) {
+        this.router.navigate(['/']);
+      }
+    });
   }
 }

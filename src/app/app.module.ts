@@ -15,23 +15,11 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
-import { ContentComponent } from './page/content/content.component';
-import { SettingsComponent } from './page/content/settings/settings.component';
-import { SignalsComponent } from './page/content/signals/signals.component';
-import { FooterComponent } from './page/footer/footer.component';
-import { HeaderComponent } from './page/header/header.component';
 import { PageComponent } from './page/page.component';
+import { PageModule } from './page/page.module';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    HeaderComponent,
-    FooterComponent,
-    ContentComponent,
-    PageComponent,
-    SettingsComponent,
-    SignalsComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -39,8 +27,9 @@ import { PageComponent } from './page/page.component';
     BrowserModule,
     NgbModule,
     HttpClientModule,
-    AuthModule,
     AppRoutingModule,
+    PageModule,
+    AuthModule,
     StoreModule.forRoot({ router: routerReducer }),
     StoreRouterConnectingModule.forRoot(),
     EffectsModule.forRoot([]),

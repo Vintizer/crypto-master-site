@@ -11,12 +11,13 @@ import {
 } from '../actions/forgetPassword.action';
 import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
-import { signupAction } from './../actions/signup.action';
 import {
-  loginAction,
-  loginFailureAction,
-  loginSuccessAction,
-} from './../actions/login.action';
+  signupAction,
+  signupFailureAction,
+  signupSuccessAction,
+} from './../actions/signup.action';
+import { PersistanceService } from 'src/app//shared/services/persistance.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class SignupEffect {
@@ -25,13 +26,14 @@ export class SignupEffect {
       ofType(signupAction),
       switchMap(({ request }) => {
         return this.authService.signup(request).pipe(
-          map((currentUser: CurrentUserInterface) =>
-            loginSuccessAction({ currentUser })
-          ),
+          map((currentUser: CurrentUserInterface) => {
+            this.persistanceService.set('accessToken', currentUser.accessToken);
+            return signupSuccessAction({ currentUser });
+          }),
           catchError((errorResponse: HttpErrorResponse) => {
             return of(
-              loginFailureAction({
-                errors: errorResponse?.error?.errors,
+              signupFailureAction({
+                errors: errorResponse.error.message,
               })
             );
           })
@@ -40,5 +42,21 @@ export class SignupEffect {
     )
   );
 
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  redirectAfterSubmit$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(signupSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/');
+        })
+      ),
+    { dispatch: false }
+  );
+
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService,
+    private persistanceService: PersistanceService,
+    private router: Router
+  ) {}
 }

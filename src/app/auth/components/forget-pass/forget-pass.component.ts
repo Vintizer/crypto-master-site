@@ -1,12 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { select, Store } from '@ngrx/store';
-import { ForgetPasswordInterface } from '../../types/forgetPassword.interface';
-import { forgetPasswordAction } from '../../store/actions/forgetPassword.action';
-import { isSubmittingSelector } from '../../store/selectors';
-import { validationErrorsSelector } from './../../store/selectors';
+import { isLoggedInSelector } from 'src/app/auth/store/selectors';
 import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.interface';
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+
+import { forgetPasswordAction } from '../../store/actions/forgetPassword.action';
+import {
+  isSubmittingSelector,
+  validationErrorsSelector,
+} from '../../store/selectors';
+import { ForgetPasswordInterface } from '../../types/forgetPassword.interface';
 
 @Component({
   selector: 'app-forget-pass',
@@ -16,12 +22,18 @@ import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.inter
 export class ForgetPassComponent implements OnInit {
   public form: FormGroup;
   public isSubmitting$: Observable<boolean>;
+  public isLoggedIn$: Observable<boolean | null>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
-  constructor(private formBuilder: FormBuilder, private store: Store) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.initializeValues();
+    this.subscribe();
   }
 
   initializeForm() {
@@ -33,6 +45,7 @@ export class ForgetPassComponent implements OnInit {
   initializeValues(): void {
     this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
 
   onSubmit(): void {
@@ -42,6 +55,13 @@ export class ForgetPassComponent implements OnInit {
     this.store.dispatch(forgetPasswordAction({ request }));
   }
 
+  subscribe() {
+    this.isLoggedIn$.subscribe((isLogged) => {
+      if (isLogged) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
   // forgetPassword() {
   //   this.http.post(`${environment.apiUrl}/reset`, this.form.value).subscribe(
   //     (res) => {

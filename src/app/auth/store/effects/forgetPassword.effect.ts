@@ -30,7 +30,7 @@ export class ForgetPasswordEffect {
           catchError((errorResponse: HttpErrorResponse) => {
             return of(
               forgetPasswordFailureAction({
-                errors: errorResponse.error.errors,
+                errors: errorResponse.error.message,
               })
             );
           })

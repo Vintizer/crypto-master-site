@@ -1,19 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { environment } from 'src/environments/environment';
-import { BackendErrorsInterface } from './../../../shared/types/backendErrors.interface';
 import { Observable } from 'rxjs';
-import { Store, select } from '@ngrx/store';
-import { SignupRequestInterface } from './../../types/signupRequest.interface';
-import { signupAction } from './../../store/actions/signup.action';
+import { isLoggedInSelector } from 'src/app/auth/store/selectors';
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
+import { environment } from 'src/environments/environment';
+
+import { HttpClient } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { select, Store } from '@ngrx/store';
+
+import { BackendErrorsInterface } from '../../../shared/types/backendErrors.interface';
 import {
-  validationErrorsSelector,
-  isSubmittingSelector,
+  signupAction,
+  signupFailureAction,
+} from '../../store/actions/signup.action';
+import {
   currentUserSelector,
-} from './../../store/selectors';
+  isSubmittingSelector,
+  validationErrorsSelector,
+} from '../../store/selectors';
+import { SignupRequestInterface } from '../../types/signupRequest.interface';
 
 @Component({
   selector: 'app-signup',
@@ -23,9 +29,13 @@ import {
 export class SignupComponent implements OnInit {
   public form: FormGroup;
   public isSubmitting$: Observable<boolean>;
-  public user$: Observable<CurrentUserInterface | null>;
+  public isLoggedIn$: Observable<boolean | null>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
-  constructor(private formBuilder: FormBuilder, private store: Store) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -44,18 +54,26 @@ export class SignupComponent implements OnInit {
   initializeValues(): void {
     this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
-    this.user$ = this.store.pipe(select(currentUserSelector));
-  }
-  subscribe() {
-    this.user$.subscribe((r) => alert(r?.email));
-    this.backendErrors$.subscribe((r) => console.log(r));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
   }
   onSubmit() {
     const request: SignupRequestInterface = this.form.value;
-    // TODO check password equal
-    this.store.dispatch(signupAction({ request }));
+    if (this.form.value.password !== this.form.value.copyPassword) {
+      this.store.dispatch(
+        signupFailureAction({ errors: { message: ['Password are not equal'] } })
+      );
+    } else {
+      this.store.dispatch(signupAction({ request }));
+    }
   }
 
+  subscribe() {
+    this.isLoggedIn$.subscribe((isLogged) => {
+      if (isLogged) {
+        this.router.navigate(['/']);
+      }
+    });
+  }
   // signUp() {
   //   // TODO validate
   //   this.http

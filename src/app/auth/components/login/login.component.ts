@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.interface';
 import { LoginRequestInterface } from './../../types/loginRequest.interface';
 import { loginAction } from './../../store/actions/login.action';
+import { isLoggedInSelector } from 'src/app/auth/store/selectors';
 import {
   validationErrorsSelector,
   isSubmittingSelector,
@@ -21,12 +22,18 @@ import {
 export class LoginComponent implements OnInit {
   public form: FormGroup;
   public isSubmitting$: Observable<boolean>;
+  public isLoggedIn$: Observable<boolean | null>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
-  constructor(private formBuilder: FormBuilder, private store: Store) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
     this.initializeValues();
+    this.subscribe();
   }
 
   initializeForm() {
@@ -39,6 +46,15 @@ export class LoginComponent implements OnInit {
   initializeValues(): void {
     this.isSubmitting$ = this.store.pipe(select(isSubmittingSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+    this.isLoggedIn$ = this.store.pipe(select(isLoggedInSelector));
+  }
+
+  subscribe() {
+    this.isLoggedIn$.subscribe((isLogged) => {
+      if (isLogged) {
+        this.router.navigate(['/']);
+      }
+    });
   }
 
   onSubmit() {

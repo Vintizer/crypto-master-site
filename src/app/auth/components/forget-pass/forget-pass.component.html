@@ -6,6 +6,10 @@
           <h1>Reset password</h1>
           <h6>Please enter email to recovery password</h6>
         </div>
+        <mc-backend-error-messages
+          *ngIf="backendErrors$ | async"
+          [backendErrors]="backendErrors$ | async"
+        ></mc-backend-error-messages>
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="exampleInputEmail1" class="form-label"

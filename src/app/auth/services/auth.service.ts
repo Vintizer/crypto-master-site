@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, switchMap, tap } from 'rxjs/operators';
 
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
 import { environment } from 'src/environments/environment';
@@ -12,6 +12,9 @@ import { ForgetPasswordResponseInterface } from '../types/forgetPasswordResponse
 import { NewPasswordInterface } from './../types/newPassword.interface';
 import { NewPasswordResponseInterface } from './../types/newPasswordResponse.interface';
 import { SignupRequestInterface } from './../types/signupRequest.interface';
+import { CurrentUserTokenResponseInterface } from '../../shared/types/currentUserTokenResponse.interface';
+import { CurrentUserResponseInterface } from './../types/currentUserResponse.interface';
+import { CurrentUserByIdResponseInterface } from './../types/currentUserByIdResponse.interface';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +23,7 @@ export class AuthService {
   getResponse(response: AuthResponseInterface): CurrentUserInterface {
     return {
       accessToken: response.accessToken,
-      refreshToken: response.refreshToken,
+      // refreshToken: response.refreshToken,
       email: response.user.email,
       id: response.user.id,
       isActivated: response.user.isActivated,
@@ -44,18 +47,56 @@ export class AuthService {
   }
 
   newPassword(data: NewPasswordInterface): Observable<boolean> {
-    console.log('login: ', data);
     const url = environment.apiUrl + '/auth/login';
     return this.http
       .post<NewPasswordResponseInterface>(url, data)
       .pipe(map((response) => (response.passwordReset ? true : false)));
   }
 
-  // TODO
-  // getCurrentUser(): Observable<CurrentUserInterface> {
-  //   const url = environment.apiUrl + '/user';
-  //   return this.http.get(url).pipe(map(this.getUser));
-  // }
+  modifyUser(
+    res: CurrentUserByIdResponseInterface,
+    token: string
+  ): CurrentUserInterface {
+    return {
+      email: res.email,
+      id: res.id,
+      isActivated: res.isActivated,
+      exchanges: res.exchanges,
+      subscribedOn: res.subscribedOn,
+      accessToken: token,
+    };
+  }
+
+  getCurrentUserById(
+    id: string | null,
+    token: string
+  ): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/${id}`;
+    return this.http.get<CurrentUserByIdResponseInterface>(url).pipe(
+      tap((a) => {
+        console.log('3');
+        console.log(a);
+      }),
+      map((res) => this.modifyUser(res, token))
+    );
+  }
+
+  getCurrentUserByToken(token: string): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/auth/user`;
+    console.log('url: ', url);
+    return (
+      this.http
+        .post<CurrentUserTokenResponseInterface | null>(url, { token })
+        // TODO если прилетел нулл
+        // TODO делать на бекенде это
+        .pipe(
+          map(
+            (currentUserTokenResponse) => currentUserTokenResponse?.id || null
+          ),
+          switchMap((id) => this.getCurrentUserById(id, token))
+        )
+    );
+  }
 
   forgetPassword(data: ForgetPasswordInterface): Observable<boolean> {
     const url = environment.apiUrl + '/auth/reset';

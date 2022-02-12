@@ -6,6 +6,10 @@
           <h1>Sign Up</h1>
           <h6>Register yourself</h6>
         </div>
+        <mc-backend-error-messages
+          *ngIf="backendErrors$ | async"
+          [backendErrors]="backendErrors$ | async"
+        ></mc-backend-error-messages>
         <form [formGroup]="form" (ngSubmit)="onSubmit()">
           <div class="mb-3">
             <label for="email" class="form-label">Email address</label>

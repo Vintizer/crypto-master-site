@@ -5,5 +5,5 @@ export interface CurrentUserInterface {
   exchanges: string;
   subscribedOn: string;
   accessToken: string;
-  refreshToken: string;
+  // refreshToken: string;
 }

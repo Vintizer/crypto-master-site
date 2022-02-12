@@ -42,7 +42,7 @@ export class NewPasswordEffect {
           catchError((errorResponse: HttpErrorResponse) => {
             return of(
               newPasswordFailureAction({
-                errors: errorResponse.error.errors,
+                errors: errorResponse.error.message,
               })
             );
           })

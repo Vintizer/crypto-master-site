@@ -1,3 +1,4 @@
+import { PersistanceService } from 'src/app//shared/services/persistance.service';
 import { ForgetPassComponent } from 'src/app/auth/components/forget-pass/forget-pass.component';
 import { LoginComponent } from 'src/app/auth/components/login/login.component';
 import { NewPasswordComponent } from 'src/app/auth/components/new-password/new-password.component';
@@ -12,7 +13,9 @@ import { RouterModule, Routes } from '@angular/router';
 import { EffectsModule } from '@ngrx/effects';
 import { StoreModule } from '@ngrx/store';
 
+import { BackendErrorMessagesModule } from '../shared/modules/backendErrorMessages/backendErrorMessages.module';
 import { ForgetPasswordEffect } from './store/effects/forgetPassword.effect';
+import { GetCurrentUserEffect } from './store/effects/getCurrentUser.effect';
 import { LoginEffect } from './store/effects/login.effect';
 import { NewPasswordEffect } from './store/effects/newPassword.effect';
 import { SignupEffect } from './store/effects/signup.effect';
@@ -41,9 +44,11 @@ const routes: Routes = [
       LoginEffect,
       NewPasswordEffect,
       SignupEffect,
+      GetCurrentUserEffect,
     ]),
+    BackendErrorMessagesModule,
   ],
 
-  providers: [AuthService],
+  providers: [AuthService, PersistanceService],
 })
 export class AuthModule {}

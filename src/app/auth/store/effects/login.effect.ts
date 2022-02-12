@@ -11,6 +11,8 @@ import {
 } from '../actions/forgetPassword.action';
 import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
+import { PersistanceService } from './../../../shared/services/persistance.service';
+import { Router } from '@angular/router';
 import {
   loginAction,
   loginFailureAction,
@@ -24,14 +26,15 @@ export class LoginEffect {
       ofType(loginAction),
       switchMap(({ request }) => {
         return this.authService.login(request).pipe(
-          map((currentUser: CurrentUserInterface) =>
-            loginSuccessAction({ currentUser })
-          ),
+          map((currentUser: CurrentUserInterface) => {
+            this.persistanceService.set('accessToken', currentUser.accessToken);
+            return loginSuccessAction({ currentUser });
+          }),
           catchError((errorResponse: HttpErrorResponse) => {
             console.log('errorResponse: ', errorResponse);
             return of(
               loginFailureAction({
-                errors: errorResponse.error.errors,
+                errors: errorResponse.error.message,
               })
             );
           })
@@ -40,5 +43,20 @@ export class LoginEffect {
     )
   );
 
-  constructor(private actions$: Actions, private authService: AuthService) {}
+  redirectAfterSubmit$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(loginSuccessAction),
+        tap(() => {
+          this.router.navigateByUrl('/');
+        })
+      ),
+    { dispatch: false }
+  );
+  constructor(
+    private actions$: Actions,
+    private authService: AuthService,
+    private persistanceService: PersistanceService,
+    private router: Router
+  ) {}
 }
