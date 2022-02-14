@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 import { AuthService } from './../../auth/services/auth.service';
 import { isLoggedInSelector } from 'src/app/auth/store/selectors';
 import { Store, select } from '@ngrx/store';
-import { map } from 'rxjs/operators';
+import { map, timeout } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',

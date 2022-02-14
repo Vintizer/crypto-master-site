@@ -1,0 +1,16 @@
+.example-spacer {
+  flex: 1 1 auto;
+}
+.container {
+  padding: 0;
+}
+mat-toolbar span {
+  // margin-left: 390px;
+  color: antiquewhite;
+}
+mat-toolbar a {
+  // margin-left: 40px;
+  margin-right: 40px;
+  color: antiquewhite;
+  text-decoration: underline;
+}

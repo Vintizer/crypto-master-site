@@ -15,7 +15,6 @@ import { environment } from '../environments/environment';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
-import { PageComponent } from './page/page.component';
 import { PageModule } from './page/page.module';
 
 @NgModule({

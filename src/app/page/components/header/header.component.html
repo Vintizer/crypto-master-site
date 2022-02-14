@@ -1,0 +1,10 @@
+<div class="container">
+  <mat-toolbar color="primary">
+    <span>CopyTrade.io</span>
+    <span class="example-spacer"></span>
+    <a [routerLink]="['/', 'settings']">Settings</a>
+    <a [routerLink]="['/', 'signals']">Signals</a>
+    {{ userEmail$ | async }}
+    <a [routerLink]="['/', 'login']" (click)="logout()">Logout</a>
+  </mat-toolbar>
+</div>
