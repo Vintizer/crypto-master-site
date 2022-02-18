@@ -48,6 +48,7 @@ export class SignupComponent implements OnInit {
       email: ['', [Validators.required]],
       password: [''],
       copyPassword: [''],
+      name: [''],
     });
   }
 

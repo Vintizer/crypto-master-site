@@ -8,3 +8,13 @@ export const userEmailSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser?.email || null
 );
+
+export const userSubscribedSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.subscribedOn || null
+);
+
+export const userExchangesSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.exchanges || []
+);

@@ -1,3 +1,87 @@
 <app-header></app-header>
-<div class="container">settings</div>
+<div class="container">
+  <div class="row">
+    <mc-backend-error-messages
+      *ngIf="backendErrors$ | async"
+      [backendErrors]="backendErrors$ | async"
+    ></mc-backend-error-messages>
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="mb-3">
+        <label for="exchangeMarket" class="form-label">Market type</label>
+        <select
+          class="custom-select"
+          id="exchangeMarket"
+          formControlName="exchangeMarket"
+        >
+          <option value="spot">Spot</option>
+          <option value="futures">Futures</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="apiName" class="form-label">Api name</label>
+        <input
+          formControlName="apiName"
+          type="text"
+          class="form-control"
+          id="apiName"
+        />
+      </div>
+      <div class="mb-3">
+        <div class="row">
+          <div class="col">
+            <label for="apiKey" class="form-label">Api key</label>
+          </div>
+        </div>
+        <input
+          formControlName="apiKey"
+          type="text"
+          class="form-control"
+          id="apiKey"
+        />
+      </div>
+      <div class="mb-3">
+        <div class="row">
+          <div class="col">
+            <label for="apiSecret" class="form-label">Api secret</label>
+          </div>
+        </div>
+        <input
+          formControlName="apiSecret"
+          type="text"
+          class="form-control"
+          id="apiSecret"
+        />
+      </div>
+      <div class="mt-2">
+        <button type="submit" class="btn btn-primary">Save api key</button>
+      </div>
+      <table class="table" *ngIf="exchanges$ | async">
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Exchange</th>
+            <th scope="col">Market</th>
+            <th scope="col">apiKey</th>
+            <th scope="col">apiSecret</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let apiKey of preparedExchanges; let i = index">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ apiKey.apiName }}</td>
+            <td>{{ apiKey.exchange }}</td>
+            <td>{{ apiKey.exchangeMarket }}</td>
+            <td>{{ apiKey.apiKey }}</td>
+            <td>
+              {{ apiKey.apiSecret | slice: 0:3 }}***{{
+                apiKey.apiSecret | slice: -3
+              }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </form>
+  </div>
+</div>
 <app-footer></app-footer>

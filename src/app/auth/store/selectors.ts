@@ -19,6 +19,11 @@ export const isLoggedInSelector = createSelector(
   (authState: AuthStateInterface) => authState.isLoggedIn
 );
 
+export const isTraderSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.isTrader ?? null
+);
+
 export const isAnonymousSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.isLoggedIn === false
@@ -27,4 +32,14 @@ export const isAnonymousSelector = createSelector(
 export const currentUserSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser
+);
+
+export const tradersListSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.tradersList
+);
+
+export const currentUserIdSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.id || null
 );

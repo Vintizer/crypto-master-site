@@ -16,7 +16,12 @@ import { StoreModule } from '@ngrx/store';
 import { BackendErrorMessagesModule } from '../shared/modules/backendErrorMessages/backendErrorMessages.module';
 import { ForgetPasswordEffect } from './store/effects/forgetPassword.effect';
 import { GetCurrentUserEffect } from './store/effects/getCurrentUser.effect';
+import { GetTradersListEffect } from './store/effects/getTradersList.effect';
 import { LoginEffect } from './store/effects/login.effect';
+import { LogoutEffect } from './store/effects/logout.effect';
+import { MakeTraderEffect } from './store/effects/makeTrader.effect';
+import { NewApiEffect } from './store/effects/newApi.effect';
+import { SubscribeTraderEffect } from './store/effects/subscribeTrader.effect';
 import { NewPasswordEffect } from './store/effects/newPassword.effect';
 import { SignupEffect } from './store/effects/signup.effect';
 
@@ -43,8 +48,13 @@ const routes: Routes = [
       ForgetPasswordEffect,
       LoginEffect,
       NewPasswordEffect,
+      SubscribeTraderEffect,
       SignupEffect,
       GetCurrentUserEffect,
+      LogoutEffect,
+      GetTradersListEffect,
+      NewApiEffect,
+      MakeTraderEffect,
     ]),
     BackendErrorMessagesModule,
   ],

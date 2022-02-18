@@ -1,7 +1,9 @@
+import { ExchangeApi } from './newApiKey.interface';
 export interface CurrentUserResponseInterface {
   email: string;
   id: string;
   isActivated: boolean;
-  exchanges: string;
+  isTrader: boolean;
+  exchanges: ExchangeApi[];
   subscribedOn: string;
 }

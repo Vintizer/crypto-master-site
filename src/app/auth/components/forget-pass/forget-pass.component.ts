@@ -50,8 +50,6 @@ export class ForgetPassComponent implements OnInit {
 
   onSubmit(): void {
     const request: ForgetPasswordInterface = this.form.value;
-    console.log('this.form.value: ', this.form.value);
-    console.log('request: ', request);
     this.store.dispatch(forgetPasswordAction({ request }));
   }
 

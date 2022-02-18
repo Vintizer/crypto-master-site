@@ -21,11 +21,32 @@ import {
   signupSuccessAction,
   signupFailureAction,
 } from './actions/signup.action';
+import { logoutAction } from './actions/logout.action';
+import {
+  newApiAction,
+  newApiFailureAction,
+  newApiSuccessAction,
+} from './actions/newApiKey.action';
+import {
+  makeTraderAction,
+  makeTraderFailureAction,
+  makeTraderSuccessAction,
+} from './actions/makeTrader.action';
 import {
   getCurrentUserAction,
   getCurrentUserSuccessAction,
   getCurrentUserFailureAction,
 } from 'src/app/auth/store/actions/getCurrentUser.action';
+import {
+  subscribeTraderAction,
+  subscribeTraderFailureAction,
+  subscribeTraderSuccessAction,
+} from './actions/subscribeTrader.action';
+import {
+  getTradersAction,
+  getTradersSuccessAction,
+  getTradersFailureAction,
+} from 'src/app/auth/store/actions/getTraders.action';
 
 const initialState: AuthStateInterface = {
   isSubmitting: false,
@@ -33,6 +54,7 @@ const initialState: AuthStateInterface = {
   currentUser: null,
   validationErrors: null,
   isLoggedIn: null,
+  tradersList: [],
 };
 
 const authReducer = createReducer(
@@ -102,14 +124,14 @@ const authReducer = createReducer(
       currentUser: action.currentUser,
     })
   ),
-  on(loginFailureAction, (state, action): AuthStateInterface => {
-    console.log('action: ', action);
-    return {
+  on(
+    loginFailureAction,
+    (state, action): AuthStateInterface => ({
       ...state,
       isSubmitting: false,
       validationErrors: action.errors,
-    };
-  }),
+    })
+  ),
   on(
     newPasswordAction,
     (state): AuthStateInterface => ({
@@ -157,9 +179,95 @@ const authReducer = createReducer(
       isLoggedIn: false,
       currentUser: null,
     })
+  ),
+  on(
+    newApiAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: true,
+    })
+  ),
+  on(
+    newApiSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    newApiFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    makeTraderAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    makeTraderSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    makeTraderFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    logoutAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoggedIn: false,
+      currentUser: null,
+    })
+  ),
+  on(
+    getTradersAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    getTradersSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      tradersList: action.traders,
+    })
+  ),
+  on(
+    getTradersFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    subscribeTraderAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    subscribeTraderSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    subscribeTraderFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
   )
 );
-
 export function reducers(state: AuthStateInterface, action: Action) {
   return authReducer(state, action);
 }

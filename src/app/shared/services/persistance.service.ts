@@ -12,7 +12,6 @@ export class PersistanceService {
 
   remove(key: string): void {
     try {
-      console.log('remove: ', key);
       localStorage.removeItem(key);
     } catch (e) {
       console.error('Error removing from localStorage', e);

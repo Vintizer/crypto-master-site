@@ -15,6 +15,8 @@ import { SignupRequestInterface } from './../types/signupRequest.interface';
 import { CurrentUserTokenResponseInterface } from '../../shared/types/currentUserTokenResponse.interface';
 import { CurrentUserResponseInterface } from './../types/currentUserResponse.interface';
 import { CurrentUserByIdResponseInterface } from './../types/currentUserByIdResponse.interface';
+import { ExchangeApi } from './../types/newApiKey.interface';
+import { Trader } from './../../shared/types/trader.interface';
 
 @Injectable()
 export class AuthService {
@@ -27,6 +29,7 @@ export class AuthService {
       email: response.user.email,
       id: response.user.id,
       isActivated: response.user.isActivated,
+      isTrader: response.user.isTrader,
       exchanges: response.user.exchanges,
       subscribedOn: response.user.subscribedOn,
     };
@@ -55,12 +58,14 @@ export class AuthService {
 
   modifyUser(
     res: CurrentUserByIdResponseInterface,
-    token: string
+    token: string,
+    id: string | null
   ): CurrentUserInterface {
     return {
       email: res.email,
-      id: res.id,
+      id: id || '',
       isActivated: res.isActivated,
+      isTrader: res.isTrader,
       exchanges: res.exchanges,
       subscribedOn: res.subscribedOn,
       accessToken: token,
@@ -71,19 +76,15 @@ export class AuthService {
     id: string | null,
     token: string
   ): Observable<CurrentUserInterface> {
+    console.log('id: ', id);
     const url = `${environment.apiUrl}/users/${id}`;
-    return this.http.get<CurrentUserByIdResponseInterface>(url).pipe(
-      tap((a) => {
-        console.log('3');
-        console.log(a);
-      }),
-      map((res) => this.modifyUser(res, token))
-    );
+    return this.http
+      .get<CurrentUserByIdResponseInterface>(url)
+      .pipe(map((res) => this.modifyUser(res, token, id)));
   }
 
   getCurrentUserByToken(token: string): Observable<CurrentUserInterface> {
     const url = `${environment.apiUrl}/auth/user`;
-    console.log('url: ', url);
     return (
       this.http
         .post<CurrentUserTokenResponseInterface | null>(url, { token })
@@ -107,5 +108,39 @@ export class AuthService {
           response.emailSend ? true : false
         )
       );
+  }
+
+  updateApiKeys(
+    newKeys: ExchangeApi[],
+    token: string | null
+  ): Observable<CurrentUserInterface> {
+    return this.getCurrentUserByToken(token || '').pipe(
+      switchMap(({ id }) => {
+        const url = `${environment.apiUrl}/users/${id}`;
+        return this.http.patch<CurrentUserInterface>(url, {
+          exchanges: newKeys,
+        });
+      })
+    );
+  }
+  makeUserAsTrader(userId: string): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/${userId}`;
+    return this.http.patch<CurrentUserInterface>(url, {
+      isTrader: true,
+    });
+  }
+  subscribeTrader(
+    userId: string,
+    traderId: string,
+    walletSize: string
+  ): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/${userId}`;
+    return this.http.patch<CurrentUserInterface>(url, {
+      subscribedOn: { traderId, walletSize },
+    });
+  }
+  getTradersList(userId: string): Observable<Trader[]> {
+    const url = `${environment.apiUrl}/users/traders/${userId}`;
+    return this.http.get<Trader[]>(url);
   }
 }

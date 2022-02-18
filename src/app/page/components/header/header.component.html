@@ -5,6 +5,8 @@
     <a [routerLink]="['/', 'settings']">Settings</a>
     <a [routerLink]="['/', 'signals']">Signals</a>
     {{ userEmail$ | async }}
-    <a [routerLink]="['/', 'login']" (click)="logout()">Logout</a>
+    <a class="logout" [routerLink]="['/', 'login']" (click)="logout()"
+      >Logout</a
+    >
   </mat-toolbar>
 </div>

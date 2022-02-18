@@ -3,7 +3,7 @@ import { Store } from '@ngrx/store';
 import { Observable } from 'rxjs';
 import { select } from '@ngrx/store';
 import { userEmailSelector } from '../../store/selectors';
-import { logoutAction } from './../../store/actions/logout.action';
+import { logoutAction } from '../../../auth/store/actions/logout.action';
 
 @Component({
   selector: 'app-header',

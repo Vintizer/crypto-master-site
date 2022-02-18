@@ -53,8 +53,6 @@ export class NewPasswordComponent implements OnInit {
 
   onSubmit() {
     const request: NewPasswordInterface = this.form.value;
-    console.log('this.form.value: ', this.form.value);
-    console.log('request: ', request);
     this.store.dispatch(newPasswordAction({ request }));
   }
   subscribe() {

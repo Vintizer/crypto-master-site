@@ -1,3 +1,82 @@
 <app-header></app-header>
-<div class="container">signals22</div>
+<div class="container">
+  <div class="row">
+    <mat-accordion>
+      <mat-expansion-panel hideToggle>
+        <mat-expansion-panel-header>
+          <mat-panel-title> I am a trader </mat-panel-title>
+          <mat-panel-description>
+            I want to sell my signals
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <button *ngIf="!(isTrader$ | async)" (click)="makeUserAsTrader()">
+          I want to be trader
+        </button>
+        <div class="trader" *ngIf="isTrader$ | async">
+          <p>I am a trader and I want to sell my signals</p>
+        </div>
+      </mat-expansion-panel>
+      <mat-expansion-panel>
+        <mat-expansion-panel-header>
+          <mat-panel-title> I am a user </mat-panel-title>
+          <mat-panel-description>
+            I want to subscribe traders
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <table class="table" *ngIf="tradersList$ | async">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Trader Name</th>
+              <th scope="col">Wallet</th>
+              <th scope="col">Subscribe</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let trader of tradersList$ | async; let i = index">
+              <th scope="row">{{ i + 1 }}</th>
+              <td>{{ trader.name }}</td>
+              <td>$<input type="text" #wallet /></td>
+              <td>
+                <button
+                  class="btn btn-primary"
+                  (click)="subscribeTrader(trader.id, wallet.value)"
+                >
+                  Subscribe
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </mat-expansion-panel>
+    </mat-accordion>
+
+    <!-- <table class="table" *ngIf="exchanges$ | async">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Name</th>
+          <th scope="col">Exchange</th>
+          <th scope="col">Market</th>
+          <th scope="col">apiKey</th>
+          <th scope="col">apiSecret</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let apiKey of preparedExchanges; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>{{ apiKey.apiName }}</td>
+          <td>{{ apiKey.exchange }}</td>
+          <td>{{ apiKey.exchangeMarket }}</td>
+          <td>{{ apiKey.apiKey }}</td>
+          <td>
+            {{ apiKey.apiSecret | slice: 0:3 }}***{{
+              apiKey.apiSecret | slice: -3
+            }}
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
+  </div>
+</div>
 <app-footer></app-footer>

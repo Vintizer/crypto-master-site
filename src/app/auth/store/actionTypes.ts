@@ -4,6 +4,7 @@ export enum ActionTypes {
   SIGNUP_FAILURE = '[Auth] Signup failure',
 
   LOGOUT = '[Auth] Logout',
+  LOGOUT_SUCCESS_ACTION = '[Auth] Logout success',
 
   LOGIN = '[Auth] Login',
   LOGIN_SUCCESS = '[Auth] Login success',
@@ -20,4 +21,20 @@ export enum ActionTypes {
   NEW_PASSWORD = '[Auth] New password',
   NEW_PASSWORD_SUCCESS = '[Auth] New password success',
   NEW_PASSWORD_FAILURE = '[Auth] New password failure',
+
+  NEW_API_KEY = '[Update] New api key',
+  NEW_API_KEY_SUCCESS = '[Update] New api key success',
+  NEW_API_KEY_FAILURE = '[Update] New api key failure',
+
+  MAKE_TRADER = '[Update] Make trader',
+  MAKE_TRADER_SUCCESS = '[Update] Make trader success',
+  MAKE_TRADER_FAILURE = '[Update] Make trader failure',
+
+  GET_TRADERS = '[Request] Get traders',
+  GET_TRADERS_SUCCESS = '[Request] Get traders success',
+  GET_TRADERS_FAILURE = '[Request] Get traders failure',
+
+  SUBSCRIBE_TRADER = '[Request] Subscribe trader',
+  SUBSCRIBE_TRADER_SUCCESS = '[Request] Subscribe trader success',
+  SUBSCRIBE_TRADER_FAILURE = '[Request] Subscribe trader failure',
 }
