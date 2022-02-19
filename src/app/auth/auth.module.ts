@@ -22,7 +22,9 @@ import { LogoutEffect } from './store/effects/logout.effect';
 import { MakeTraderEffect } from './store/effects/makeTrader.effect';
 import { NewApiEffect } from './store/effects/newApi.effect';
 import { SubscribeTraderEffect } from './store/effects/subscribeTrader.effect';
+import { UnSubscribeTraderEffect } from './store/effects/unSubscribeTrader.effect';
 import { NewPasswordEffect } from './store/effects/newPassword.effect';
+import { UpdateFeeEffect } from './store/effects/updateFee.effect';
 import { SignupEffect } from './store/effects/signup.effect';
 
 const routes: Routes = [
@@ -53,7 +55,9 @@ const routes: Routes = [
       GetCurrentUserEffect,
       LogoutEffect,
       GetTradersListEffect,
+      UnSubscribeTraderEffect,
       NewApiEffect,
+      UpdateFeeEffect,
       MakeTraderEffect,
     ]),
     BackendErrorMessagesModule,

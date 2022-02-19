@@ -43,6 +43,16 @@ import {
   subscribeTraderSuccessAction,
 } from './actions/subscribeTrader.action';
 import {
+  unSubscribeTraderAction,
+  unSubscribeTraderFailureAction,
+  unSubscribeTraderSuccessAction,
+} from './actions/unSubscribeTrader.action';
+import {
+  updateFeeAction,
+  updateFeeFailureAction,
+  updateFeeSuccessAction,
+} from './actions/updateFee.action';
+import {
   getTradersAction,
   getTradersSuccessAction,
   getTradersFailureAction,
@@ -262,6 +272,44 @@ const authReducer = createReducer(
   ),
   on(
     subscribeTraderFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    unSubscribeTraderAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    unSubscribeTraderSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    unSubscribeTraderFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    updateFeeAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    updateFeeSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    updateFeeFailureAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: false,

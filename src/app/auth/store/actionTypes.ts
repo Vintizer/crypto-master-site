@@ -37,4 +37,12 @@ export enum ActionTypes {
   SUBSCRIBE_TRADER = '[Request] Subscribe trader',
   SUBSCRIBE_TRADER_SUCCESS = '[Request] Subscribe trader success',
   SUBSCRIBE_TRADER_FAILURE = '[Request] Subscribe trader failure',
+
+  UNSUBSCRIBE_TRADER = '[Request] Unsubscribe trader',
+  UNSUBSCRIBE_TRADER_SUCCESS = '[Request] Unsubscribe trader success',
+  UNSUBSCRIBE_TRADER_FAILURE = '[Request] Unsubscribe trader failure',
+
+  UPDATE_FEE = '[Request] Update fee',
+  UPDATE_FEE_SUCCESS = '[Request] Update fee success',
+  UPDATE_FEE_FAILURE = '[Request] Update fee failure',
 }

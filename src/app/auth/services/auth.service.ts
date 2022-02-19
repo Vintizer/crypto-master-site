@@ -25,6 +25,7 @@ export class AuthService {
   getResponse(response: AuthResponseInterface): CurrentUserInterface {
     return {
       accessToken: response.accessToken,
+      traderFee: response.user.traderFee,
       // refreshToken: response.refreshToken,
       email: response.user.email,
       id: response.user.id,
@@ -66,6 +67,7 @@ export class AuthService {
       id: id || '',
       isActivated: res.isActivated,
       isTrader: res.isTrader,
+      traderFee: res.traderFee,
       exchanges: res.exchanges,
       subscribedOn: res.subscribedOn,
       accessToken: token,
@@ -76,7 +78,6 @@ export class AuthService {
     id: string | null,
     token: string
   ): Observable<CurrentUserInterface> {
-    console.log('id: ', id);
     const url = `${environment.apiUrl}/users/${id}`;
     return this.http
       .get<CurrentUserByIdResponseInterface>(url)
@@ -111,7 +112,7 @@ export class AuthService {
   }
 
   updateApiKeys(
-    newKeys: ExchangeApi[],
+    newKeys: ExchangeApi,
     token: string | null
   ): Observable<CurrentUserInterface> {
     return this.getCurrentUserByToken(token || '').pipe(
@@ -137,6 +138,19 @@ export class AuthService {
     const url = `${environment.apiUrl}/users/${userId}`;
     return this.http.patch<CurrentUserInterface>(url, {
       subscribedOn: { traderId, walletSize },
+    });
+  }
+  unSubscribeTrader(
+    userId: string,
+    traderId: string
+  ): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/unsubscribe/${userId}`;
+    return this.http.post<CurrentUserInterface>(url, { traderId });
+  }
+  updateFee(userId: string, fee: number): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/${userId}`;
+    return this.http.patch<CurrentUserInterface>(url, {
+      traderFee: fee,
     });
   }
   getTradersList(userId: string): Observable<Trader[]> {

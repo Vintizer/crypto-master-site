@@ -31,6 +31,7 @@ export class SettingsComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.initializeValues();
+    this.subscribe();
   }
 
   initializeForm() {
@@ -46,6 +47,9 @@ export class SettingsComponent implements OnInit {
   initializeValues(): void {
     this.exchanges$ = this.store.pipe(select(userExchangesSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+  }
+
+  subscribe() {
     this.exchanges$.subscribe((val) => {
       this.preparedExchanges = val;
     });
@@ -55,9 +59,8 @@ export class SettingsComponent implements OnInit {
     const request: ExchangeApi = this.form.value;
     // TODO unsubscribe all
     this.exchanges$.pipe(take(1)).subscribe((val) => {
-      console.log('val: ', val);
       if (val?.length === 0) {
-        this.store.dispatch(newApiAction({ newApi: [request] }));
+        this.store.dispatch(newApiAction({ newApi: request }));
       } else {
         try {
           const curExchanges: ExchangeApi[] = val || [];
@@ -66,8 +69,7 @@ export class SettingsComponent implements OnInit {
               return s.apiKey === request.apiKey;
             }) || null;
           if (!isCopyExchange) {
-            curExchanges.push(request);
-            this.store.dispatch(newApiAction({ newApi: curExchanges }));
+            this.store.dispatch(newApiAction({ newApi: request }));
           } else {
             // TODO
             // newApiFailureSaveAction({

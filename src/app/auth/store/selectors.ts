@@ -1,5 +1,6 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
 import { AuthStateInterface } from 'src/app/auth/types/authState.interface';
+import { SubscribedOn } from './../../shared/types/currentUser.interface';
 
 export const authFeatureSelector =
   createFeatureSelector<AuthStateInterface>('auth');
@@ -42,4 +43,14 @@ export const tradersListSelector = createSelector(
 export const currentUserIdSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser?.id || null
+);
+
+export const subscribedSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.subscribedOn || []
+);
+
+export const traderFeeSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.traderFee || 0
 );

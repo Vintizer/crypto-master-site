@@ -21,7 +21,6 @@ export class GetTradersListEffect {
       switchMap(({ userId }) => {
         return this.authService.getTradersList(userId).pipe(
           map((tradersList: Trader[]) => {
-            console.log('tradersList: ', tradersList);
             return getTradersSuccessAction({ traders: tradersList });
           }),
 

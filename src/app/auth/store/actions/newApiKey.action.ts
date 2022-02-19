@@ -7,7 +7,7 @@ import { CurrentUserInterface } from './../../../shared/types/currentUser.interf
 
 export const newApiAction = createAction(
   ActionTypes.NEW_API_KEY,
-  props<{ newApi: ExchangeApi[] }>()
+  props<{ newApi: ExchangeApi }>()
 );
 
 export const newApiSuccessAction = createAction(

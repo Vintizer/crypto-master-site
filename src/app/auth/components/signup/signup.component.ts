@@ -8,6 +8,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { select, Store } from '@ngrx/store';
+import { ActivatedRoute } from '@angular/router';
 
 import { BackendErrorsInterface } from '../../../shared/types/backendErrors.interface';
 import {
@@ -32,6 +33,7 @@ export class SignupComponent implements OnInit {
   public isLoggedIn$: Observable<boolean | null>;
   public backendErrors$: Observable<BackendErrorsInterface | null>;
   constructor(
+    private route: ActivatedRoute,
     private formBuilder: FormBuilder,
     private store: Store,
     private router: Router
@@ -44,11 +46,15 @@ export class SignupComponent implements OnInit {
   }
 
   initializeForm() {
-    this.form = this.formBuilder.group({
-      email: ['', [Validators.required]],
-      password: [''],
-      copyPassword: [''],
-      name: [''],
+    this.route.queryParams.subscribe((params) => {
+      const refId = params['refId'];
+      this.form = this.formBuilder.group({
+        email: ['', [Validators.required]],
+        password: [''],
+        copyPassword: [''],
+        name: [''],
+        refId: refId != null ? [{ value: refId, disabled: true }] : [''],
+      });
     });
   }
 
