@@ -45,4 +45,8 @@ export enum ActionTypes {
   UPDATE_FEE = '[Request] Update fee',
   UPDATE_FEE_SUCCESS = '[Request] Update fee success',
   UPDATE_FEE_FAILURE = '[Request] Update fee failure',
+
+  NEW_SIGNAL = '[Request] New signal',
+  NEW_SIGNAL_SUCCESS = '[Request] New signal success',
+  NEW_SIGNAL_FAILURE = '[Request] New signal failure',
 }

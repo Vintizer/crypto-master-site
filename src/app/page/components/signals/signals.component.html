@@ -19,6 +19,70 @@
             Update Fee
           </button>
         </div>
+        <form [formGroup]="form" (ngSubmit)="onSubmit()">
+          <div class="mb-3">
+            <label for="inCoin" class="form-label">Initial coin</label>
+            <input
+              formControlName="inCoin"
+              type="text"
+              class="form-control uppercase"
+              id="inCoin"
+            />
+          </div>
+          <div class="mb-3">
+            <label for="baseCoin" class="form-label">Base coin</label>
+            <input
+              formControlName="baseCoin"
+              type="text"
+              class="form-control uppercase"
+              id="baseCoin"
+            />
+          </div>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col">
+                <label for="buyPrice" class="form-label">Price to buy</label>
+              </div>
+            </div>
+            <input
+              formControlName="buyPrice"
+              type="text"
+              class="form-control"
+              id="buyPrice"
+            />
+          </div>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col">
+                <label for="tpPrice" class="form-label"
+                  >Take profit price</label
+                >
+              </div>
+            </div>
+            <input
+              formControlName="tpPrice"
+              type="text"
+              class="form-control"
+              id="tpPrice"
+            />
+          </div>
+          <div class="mb-3">
+            <div class="row">
+              <div class="col">
+                <label for="slPrice" class="form-label">Stop loss price</label>
+              </div>
+            </div>
+            <input
+              formControlName="slPrice"
+              type="text"
+              class="form-control"
+              id="slPrice"
+            />
+          </div>
+          <div class="mt-2">
+            <button type="submit" class="btn btn-primary">Send signal</button>
+          </div>
+        </form>
       </mat-expansion-panel>
       <mat-expansion-panel>
         <mat-expansion-panel-header>
@@ -32,6 +96,7 @@
             <tr>
               <th scope="col">#</th>
               <th scope="col">Trader Name</th>
+              <th scope="col">Api key</th>
               <th scope="col">Wallet</th>
               <th scope="col">Subscribe</th>
             </tr>
@@ -43,6 +108,16 @@
             >
               <th scope="row">{{ i + 1 }}</th>
               <td>{{ trader.name }}</td>
+              <td>
+                <select name="api" id="api" *ngIf="apiKeys$ | async">
+                  <option
+                    *ngFor="let apiKey of apiKeys$ | async"
+                    val="apiKey.apiName"
+                  >
+                    {{ apiKey.apiName }}
+                  </option>
+                </select>
+              </td>
               <ng-container *ngIf="!trader.isSubscribed">
                 <td>$<input type="text" #wallet /></td>
                 <td>

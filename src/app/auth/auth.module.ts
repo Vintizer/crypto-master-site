@@ -21,11 +21,12 @@ import { LoginEffect } from './store/effects/login.effect';
 import { LogoutEffect } from './store/effects/logout.effect';
 import { MakeTraderEffect } from './store/effects/makeTrader.effect';
 import { NewApiEffect } from './store/effects/newApi.effect';
+import { NewPasswordEffect } from './store/effects/newPassword.effect';
+import { NewSignalEffect } from './store/effects/newSignal.effect';
+import { SignupEffect } from './store/effects/signup.effect';
 import { SubscribeTraderEffect } from './store/effects/subscribeTrader.effect';
 import { UnSubscribeTraderEffect } from './store/effects/unSubscribeTrader.effect';
-import { NewPasswordEffect } from './store/effects/newPassword.effect';
 import { UpdateFeeEffect } from './store/effects/updateFee.effect';
-import { SignupEffect } from './store/effects/signup.effect';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
@@ -51,6 +52,7 @@ const routes: Routes = [
       LoginEffect,
       NewPasswordEffect,
       SubscribeTraderEffect,
+      NewSignalEffect,
       SignupEffect,
       GetCurrentUserEffect,
       LogoutEffect,

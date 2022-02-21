@@ -10,6 +10,11 @@ export const isSubmittingSelector = createSelector(
   (authState: AuthStateInterface) => authState.isSubmitting
 );
 
+export const isLoadingSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.isLoading
+);
+
 export const validationErrorsSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.validationErrors
@@ -53,4 +58,9 @@ export const subscribedSelector = createSelector(
 export const traderFeeSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser?.traderFee || 0
+);
+
+export const apiKeysSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) => authState.currentUser?.exchanges || []
 );

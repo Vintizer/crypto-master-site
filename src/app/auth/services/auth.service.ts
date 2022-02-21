@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
@@ -17,6 +17,7 @@ import { CurrentUserResponseInterface } from './../types/currentUserResponse.int
 import { CurrentUserByIdResponseInterface } from './../types/currentUserByIdResponse.interface';
 import { ExchangeApi } from './../types/newApiKey.interface';
 import { Trader } from './../../shared/types/trader.interface';
+import { SignalInterface } from './../types/signal.interface';
 
 @Injectable()
 export class AuthService {
@@ -156,5 +157,15 @@ export class AuthService {
   getTradersList(userId: string): Observable<Trader[]> {
     const url = `${environment.apiUrl}/users/traders/${userId}`;
     return this.http.get<Trader[]>(url);
+  }
+  newSignal({
+    traderId,
+    coin,
+    baseCoin,
+    price,
+    takeProfit,
+    stopLoss,
+  }: SignalInterface): any {
+    return of(1);
   }
 }

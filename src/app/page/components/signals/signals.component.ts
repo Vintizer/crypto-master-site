@@ -1,32 +1,31 @@
-import { Observable, take, map } from 'rxjs';
+import { map, Observable, take } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { select, Store } from '@ngrx/store';
 
+import { getTradersAction } from '../../../auth/store/actions/getTraders.action';
+import { makeTraderAction } from '../../../auth/store/actions/makeTrader.action';
+import { subscribeTraderAction } from '../../../auth/store/actions/subscribeTrader.action';
+import { unSubscribeTraderAction } from '../../../auth/store/actions/unSubscribeTrader.action';
+import { updateFeeAction } from '../../../auth/store/actions/updateFee.action';
 import {
-  isTraderSelector,
   currentUserIdSelector,
-  tradersListSelector,
+  currentUserSelector,
+  isTraderSelector,
   subscribedSelector,
+  traderFeeSelector,
+  tradersListSelector,
 } from '../../../auth/store/selectors';
-import { makeTraderAction } from './../../../auth/store/actions/makeTrader.action';
-import { getTradersAction } from './../../../auth/store/actions/getTraders.action';
 import {
   CurrentUserInterface,
   SubscribedOn,
-} from './../../../shared/types/currentUser.interface';
-import {
-  Trader,
-  PreparedTrader,
-} from './../../../shared/types/trader.interface';
-import { subscribeTraderAction } from './../../../auth/store/actions/subscribeTrader.action';
-import { switchMap } from 'rxjs/operators';
-import {
-  currentUserSelector,
-  traderFeeSelector,
-} from './../../../auth/store/selectors';
-import { unSubscribeTraderAction } from './../../../auth/store/actions/unSubscribeTrader.action';
-import { updateFeeAction } from './../../../auth/store/actions/updateFee.action';
+} from '../../../shared/types/currentUser.interface';
+import { PreparedTrader, Trader } from '../../../shared/types/trader.interface';
+import { newSignalAction } from './../../../auth/store/actions/newSignal.action';
+import { apiKeysSelector } from './../../../auth/store/selectors';
+import { ExchangeApi } from './../../../auth/types/newApiKey.interface';
 
 @Component({
   selector: 'app-signals',
@@ -34,14 +33,16 @@ import { updateFeeAction } from './../../../auth/store/actions/updateFee.action'
   styleUrls: ['./signals.component.scss'],
 })
 export class SignalsComponent implements OnInit {
+  public form: FormGroup;
   public isTrader$: Observable<boolean | null>;
   public tradersList$: Observable<Trader[]>;
   public preparedTrader$: Observable<PreparedTrader[]>;
   public subscribed$: Observable<SubscribedOn[]>;
   public traderFee$: Observable<number>;
+  public apiKeys$: Observable<ExchangeApi[]>;
   public userId$: Observable<string | null>;
   public panelOpenState: boolean;
-  constructor(private store: Store) {}
+  constructor(private formBuilder: FormBuilder, private store: Store) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -50,13 +51,13 @@ export class SignalsComponent implements OnInit {
   }
 
   initializeForm() {
-    // this.form = this.formBuilder.group({
-    //   exchangeMarket: 'spot',
-    //   apiName: [''],
-    //   apiKey: [''],
-    //   apiSecret: [''],
-    //   exchange: 'Binance',
-    // });
+    this.form = this.formBuilder.group({
+      inCoin: [''],
+      baseCoin: [''],
+      buyPrice: ['', Validators.pattern('^[0-9.,]*$')],
+      tpPrice: [''],
+      slPrice: [''],
+    });
   }
 
   fetchData() {
@@ -96,6 +97,7 @@ export class SignalsComponent implements OnInit {
   initializeValues(): void {
     this.panelOpenState = true;
     this.isTrader$ = this.store.pipe(select(isTraderSelector));
+    this.apiKeys$ = this.store.pipe(select(apiKeysSelector));
     this.tradersList$ = this.store.pipe(select(tradersListSelector));
     this.subscribed$ = this.store.pipe(select(subscribedSelector));
     this.traderFee$ = this.store.pipe(select(traderFeeSelector));
@@ -138,5 +140,10 @@ export class SignalsComponent implements OnInit {
         });
       });
     }
+  }
+  onSubmit() {
+    console.log('this.form.value: ', this.form.value);
+    // TODO add for subscribe api keys
+    this.store.dispatch(newSignalAction({ signal: this.form.value }));
   }
 }

@@ -53,6 +53,11 @@ import {
   updateFeeSuccessAction,
 } from './actions/updateFee.action';
 import {
+  newSignalAction,
+  newSignalFailureAction,
+  newSignalSuccessAction,
+} from './actions/newSignal.action';
+import {
   getTradersAction,
   getTradersSuccessAction,
   getTradersFailureAction,
@@ -310,6 +315,24 @@ const authReducer = createReducer(
   ),
   on(
     updateFeeFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    newSignalAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    newSignalSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    newSignalFailureAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: false,
