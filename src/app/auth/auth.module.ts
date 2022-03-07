@@ -23,6 +23,7 @@ import { MakeTraderEffect } from './store/effects/makeTrader.effect';
 import { NewApiEffect } from './store/effects/newApi.effect';
 import { NewPasswordEffect } from './store/effects/newPassword.effect';
 import { NewSignalEffect } from './store/effects/newSignal.effect';
+import { RemoveApiKeyEffect } from './store/effects/removeApiKey.effect';
 import { SignupEffect } from './store/effects/signup.effect';
 import { SubscribeTraderEffect } from './store/effects/subscribeTrader.effect';
 import { UnSubscribeTraderEffect } from './store/effects/unSubscribeTrader.effect';
@@ -61,6 +62,7 @@ const routes: Routes = [
       NewApiEffect,
       UpdateFeeEffect,
       MakeTraderEffect,
+      RemoveApiKeyEffect,
     ]),
     BackendErrorMessagesModule,
   ],

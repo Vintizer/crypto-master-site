@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, take } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
 
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
@@ -148,6 +148,10 @@ export class AuthService {
     const url = `${environment.apiUrl}/users/unsubscribe/${userId}`;
     return this.http.post<CurrentUserInterface>(url, { traderId });
   }
+  removeApiKey(name: string, userId: string): Observable<CurrentUserInterface> {
+    const url = `${environment.apiUrl}/users/removeApiKey/${userId}`;
+    return this.http.post<CurrentUserInterface>(url, { name });
+  }
   updateFee(userId: string, fee: number): Observable<CurrentUserInterface> {
     const url = `${environment.apiUrl}/users/${userId}`;
     return this.http.patch<CurrentUserInterface>(url, {
@@ -158,14 +162,8 @@ export class AuthService {
     const url = `${environment.apiUrl}/users/traders/${userId}`;
     return this.http.get<Trader[]>(url);
   }
-  newSignal({
-    traderId,
-    coin,
-    baseCoin,
-    price,
-    takeProfit,
-    stopLoss,
-  }: SignalInterface): any {
-    return of(1);
+  newSignal(signal: SignalInterface): any {
+    const url = `${environment.apiUrl}/signals`;
+    return this.http.post<SignalInterface>(url, signal);
   }
 }

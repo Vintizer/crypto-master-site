@@ -5,7 +5,7 @@
       *ngIf="backendErrors$ | async"
       [backendErrors]="backendErrors$ | async"
     ></mc-backend-error-messages>
-    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+    <form [formGroup]="form">
       <div class="mb-3">
         <label for="exchangeMarket" class="form-label">Market type</label>
         <select
@@ -13,8 +13,8 @@
           id="exchangeMarket"
           formControlName="exchangeMarket"
         >
-          <option value="spot">Spot</option>
-          <option value="futures">Futures</option>
+          <option value="Spot">Spot</option>
+          <option value="Futures">Futures</option>
         </select>
       </div>
       <div class="mb-3">
@@ -53,7 +53,9 @@
         />
       </div>
       <div class="mt-2">
-        <button type="submit" class="btn btn-primary">Save api key</button>
+        <button type="submit" class="btn btn-primary" (click)="onSubmit()">
+          Save api key
+        </button>
       </div>
       <table class="table" *ngIf="exchanges$ | async">
         <thead>
@@ -64,6 +66,7 @@
             <th scope="col">Market</th>
             <th scope="col">apiKey</th>
             <th scope="col">apiSecret</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>
@@ -72,11 +75,16 @@
             <td>{{ apiKey.apiName }}</td>
             <td>{{ apiKey.exchange }}</td>
             <td>{{ apiKey.exchangeMarket }}</td>
-            <td>{{ apiKey.apiKey }}</td>
+            <td>
+              {{ apiKey.apiKey | slice: 0:3 }}***{{ apiKey.apiKey | slice: -3 }}
+            </td>
             <td>
               {{ apiKey.apiSecret | slice: 0:3 }}***{{
                 apiKey.apiSecret | slice: -3
               }}
+            </td>
+            <td>
+              <button (click)="removeKey(apiKey.apiName)">Remove</button>
             </td>
           </tr>
         </tbody>

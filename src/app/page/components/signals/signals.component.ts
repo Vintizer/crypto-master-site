@@ -1,4 +1,4 @@
-import { map, Observable, take } from 'rxjs';
+import { map, Observable, take, filter, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { Component, OnInit } from '@angular/core';
@@ -26,6 +26,7 @@ import { PreparedTrader, Trader } from '../../../shared/types/trader.interface';
 import { newSignalAction } from './../../../auth/store/actions/newSignal.action';
 import { apiKeysSelector } from './../../../auth/store/selectors';
 import { ExchangeApi } from './../../../auth/types/newApiKey.interface';
+import { UtilsService } from './../../../shared/services/utils.service';
 
 @Component({
   selector: 'app-signals',
@@ -39,10 +40,15 @@ export class SignalsComponent implements OnInit {
   public preparedTrader$: Observable<PreparedTrader[]>;
   public subscribed$: Observable<SubscribedOn[]>;
   public traderFee$: Observable<number>;
+  public price$: Observable<string>;
   public apiKeys$: Observable<ExchangeApi[]>;
   public userId$: Observable<string | null>;
   public panelOpenState: boolean;
-  constructor(private formBuilder: FormBuilder, private store: Store) {}
+  constructor(
+    private formBuilder: FormBuilder,
+    private store: Store,
+    private utilsService: UtilsService
+  ) {}
 
   ngOnInit(): void {
     this.initializeForm();
@@ -52,11 +58,11 @@ export class SignalsComponent implements OnInit {
 
   initializeForm() {
     this.form = this.formBuilder.group({
-      inCoin: [''],
-      baseCoin: [''],
-      buyPrice: ['', Validators.pattern('^[0-9.,]*$')],
-      tpPrice: [''],
-      slPrice: [''],
+      coin: ['', Validators.required],
+      baseCoin: ['', Validators.required],
+      buyPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
+      tpPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
+      slPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
     });
   }
 
@@ -142,8 +148,40 @@ export class SignalsComponent implements OnInit {
     }
   }
   onSubmit() {
-    console.log('this.form.value: ', this.form.value);
-    // TODO add for subscribe api keys
-    this.store.dispatch(newSignalAction({ signal: this.form.value }));
+    this.userId$.pipe(take(1)).subscribe((id) => {
+      if (id != null) {
+        this.store.dispatch(
+          newSignalAction({
+            signal: { ...this.form.value, traderId: id },
+          })
+        );
+      }
+    });
+  }
+  async onCoinChange() {
+    const { coin, baseCoin } = this.form.value;
+    if (coin != '' && baseCoin != '') {
+      this.price$ = this.utilsService.getCoinPrice(coin, baseCoin);
+    } else {
+      this.price$ = of('');
+    }
+  }
+  async clickPrice() {
+    this.price$.pipe(take(1)).subscribe((pr) => {
+      this.form.patchValue({ buyPrice: pr });
+    });
+  }
+  clickTpPrice(perc: number) {
+    this.price$.pipe(take(1)).subscribe((pr) => {
+      this.form.patchValue({ tpPrice: Number(pr) * (1 + perc / 100) });
+    });
+  }
+  clickSlPrice(perc: number) {
+    this.price$.pipe(take(1)).subscribe((pr) => {
+      this.form.patchValue({ slPrice: Number(pr) * (1 - perc / 100) });
+    });
+  }
+  get f() {
+    return this.form.controls;
   }
 }

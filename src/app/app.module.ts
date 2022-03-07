@@ -17,6 +17,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth/auth.module';
 import { PageModule } from './page/page.module';
+import { UtilsService } from './shared/services/utils.service';
 
 @NgModule({
   declarations: [AppComponent],
@@ -41,7 +42,7 @@ import { PageModule } from './page/page.module';
       logOnly: environment.production,
     }),
   ],
-  providers: [],
+  providers: [UtilsService],
   bootstrap: [AppComponent],
   exports: [RouterModule],
 })

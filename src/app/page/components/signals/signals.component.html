@@ -23,21 +23,43 @@
           <div class="mb-3">
             <label for="inCoin" class="form-label">Initial coin</label>
             <input
-              formControlName="inCoin"
+              formControlName="coin"
+              (change)="onCoinChange()"
               type="text"
               class="form-control uppercase"
               id="inCoin"
             />
+            <div class="error" *ngIf="f['coin'].touched && f['coin'].invalid">
+              <div *ngIf="f['coin'].errors?.['required']">
+                Coin is required.
+              </div>
+            </div>
           </div>
           <div class="mb-3">
             <label for="baseCoin" class="form-label">Base coin</label>
             <input
               formControlName="baseCoin"
+              (change)="onCoinChange()"
               type="text"
               class="form-control uppercase"
               id="baseCoin"
             />
+            <div
+              class="error"
+              *ngIf="f['baseCoin'].touched && f['baseCoin'].invalid"
+            >
+              <div *ngIf="f['baseCoin'].errors?.['required']">
+                Coin is required.
+              </div>
+            </div>
           </div>
+          <p *ngIf="price$ | async">
+            Current price is
+            <a class="clickPrice" (click)="clickPrice()">{{
+              price$ | async
+            }}</a>
+            {{ form.value.coin }}/{{ form.value.baseCoin }}
+          </p>
           <div class="mb-3">
             <div class="row">
               <div class="col">
@@ -50,13 +72,28 @@
               class="form-control"
               id="buyPrice"
             />
+            <div
+              class="error"
+              *ngIf="f['buyPrice'].touched && f['buyPrice'].invalid"
+            >
+              <div *ngIf="f['buyPrice'].errors?.['required']">
+                Number is required.
+              </div>
+              <div *ngIf="f['buyPrice'].errors?.['pattern']">
+                Enter only number.
+              </div>
+            </div>
           </div>
           <div class="mb-3">
             <div class="row">
               <div class="col">
-                <label for="tpPrice" class="form-label"
-                  >Take profit price</label
-                >
+                <label for="tpPrice" class="form-label">Take profit price</label
+                >&nbsp;&nbsp;
+                <span *ngIf="price$ | async">
+                  <a class="clickPrice" (click)="clickTpPrice(1)">+1%</a>&nbsp;/
+                  <a class="clickPrice" (click)="clickTpPrice(2)">+2%</a>&nbsp;/
+                  <a class="clickPrice" (click)="clickTpPrice(5)">+5%</a>
+                </span>
               </div>
             </div>
             <input
@@ -65,11 +102,28 @@
               class="form-control"
               id="tpPrice"
             />
+            <div
+              class="error"
+              *ngIf="f['tpPrice'].touched && f['tpPrice'].invalid"
+            >
+              <div *ngIf="f['tpPrice'].errors?.['required']">
+                Number is required.
+              </div>
+              <div *ngIf="f['tpPrice'].errors?.['pattern']">
+                Enter only number.
+              </div>
+            </div>
           </div>
           <div class="mb-3">
             <div class="row">
               <div class="col">
-                <label for="slPrice" class="form-label">Stop loss price</label>
+                <label for="slPrice" class="form-label">Stop loss price</label
+                >&nbsp;&nbsp;
+                <span *ngIf="price$ | async">
+                  <a class="clickPrice" (click)="clickSlPrice(1)">-1%</a>&nbsp;/
+                  <a class="clickPrice" (click)="clickSlPrice(2)">-2%</a>&nbsp;/
+                  <a class="clickPrice" (click)="clickSlPrice(5)">-5%</a>
+                </span>
               </div>
             </div>
             <input
@@ -78,9 +132,26 @@
               class="form-control"
               id="slPrice"
             />
+            <div
+              class="error"
+              *ngIf="f['slPrice'].touched && f['slPrice'].invalid"
+            >
+              <div *ngIf="f['slPrice'].errors?.['required']">
+                Number is required.
+              </div>
+              <div *ngIf="f['slPrice'].errors?.['pattern']">
+                Enter only number.
+              </div>
+            </div>
           </div>
           <div class="mt-2">
-            <button type="submit" class="btn btn-primary">Send signal</button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="!form.valid"
+            >
+              Send signal
+            </button>
           </div>
         </form>
       </mat-expansion-panel>

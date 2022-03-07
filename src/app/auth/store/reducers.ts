@@ -58,6 +58,11 @@ import {
   newSignalSuccessAction,
 } from './actions/newSignal.action';
 import {
+  removeApiKeyAction,
+  removeApiKeyFailureAction,
+  removeApiKeySuccessAction,
+} from './actions/removeApiKey.action';
+import {
   getTradersAction,
   getTradersSuccessAction,
   getTradersFailureAction,
@@ -333,6 +338,25 @@ const authReducer = createReducer(
   ),
   on(
     newSignalFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    removeApiKeyAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    removeApiKeySuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      currentUser: action.currentUser,
+    })
+  ),
+  on(
+    removeApiKeyFailureAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: false,

@@ -9,12 +9,14 @@ import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.inter
 import { isLoggedInSelector } from 'src/app/auth/store/selectors';
 import { userExchangesSelector } from './../../store/selectors';
 import { ExchangeApi } from './../../../auth/types/newApiKey.interface';
+import { currentUserIdSelector } from '../../../auth/store/selectors';
 import {
   newApiFailureAction,
   newApiAction,
 } from './../../../auth/store/actions/newApiKey.action';
 import { validationErrorsSelector } from './../../../auth/store/selectors';
 import { signupFailureAction } from './../../../auth/store/actions/signup.action';
+import { removeApiKeyAction } from './../../../auth/store/actions/removeApiKey.action';
 import { Exchange } from './../../../shared/types/exchange.type';
 
 @Component({
@@ -27,6 +29,7 @@ export class SettingsComponent implements OnInit {
   public exchanges$: Observable<ExchangeApi[]>;
   public preparedExchanges: ExchangeApi[];
   public backendErrors$: Observable<BackendErrorsInterface | null>;
+  public userId$: Observable<string | null>;
   constructor(private formBuilder: FormBuilder, private store: Store) {}
   ngOnInit(): void {
     this.initializeForm();
@@ -47,6 +50,7 @@ export class SettingsComponent implements OnInit {
   initializeValues(): void {
     this.exchanges$ = this.store.pipe(select(userExchangesSelector));
     this.backendErrors$ = this.store.pipe(select(validationErrorsSelector));
+    this.userId$ = this.store.pipe(select(currentUserIdSelector));
   }
 
   subscribe() {
@@ -57,6 +61,7 @@ export class SettingsComponent implements OnInit {
 
   onSubmit() {
     const request: ExchangeApi = this.form.value;
+    console.log('request: ', request);
     // TODO unsubscribe all
     this.exchanges$.pipe(take(1)).subscribe((val) => {
       if (val?.length === 0) {
@@ -81,6 +86,14 @@ export class SettingsComponent implements OnInit {
         }
         // TODO wait server answer
         this.form.reset();
+        this.form.patchValue({ exchange: 'Binance' });
+      }
+    });
+  }
+  removeKey(name: string): void {
+    this.userId$.pipe(take(1)).subscribe((id) => {
+      if (id != null) {
+        this.store.dispatch(removeApiKeyAction({ name, userId: id }));
       }
     });
   }

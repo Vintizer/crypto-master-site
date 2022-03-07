@@ -49,4 +49,8 @@ export enum ActionTypes {
   NEW_SIGNAL = '[Request] New signal',
   NEW_SIGNAL_SUCCESS = '[Request] New signal success',
   NEW_SIGNAL_FAILURE = '[Request] New signal failure',
+
+  REMOVE_API_KEY = '[Request] Remove api key',
+  REMOVE_API_KEY_SUCCESS = '[Request] Remove api key success',
+  REMOVE_API_KEY_FAILURE = '[Request] Remove api key failure',
 }
