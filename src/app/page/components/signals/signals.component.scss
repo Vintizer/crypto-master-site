@@ -23,3 +23,6 @@
   color: red;
   font-weight: bold;
 }
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}

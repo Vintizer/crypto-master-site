@@ -6,7 +6,7 @@ import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface
 
 export const subscribeTraderAction = createAction(
   ActionTypes.SUBSCRIBE_TRADER,
-  props<{ userId: string; traderId: string; walletSize: string }>()
+  props<{ userId: string; traderId: string; walletSize: string; apiName: string }>()
 );
 
 export const subscribeTraderSuccessAction = createAction(

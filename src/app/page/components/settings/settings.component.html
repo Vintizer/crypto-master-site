@@ -7,15 +7,14 @@
     ></mc-backend-error-messages>
     <form [formGroup]="form">
       <div class="mb-3">
-        <label for="exchangeMarket" class="form-label">Market type</label>
-        <select
-          class="custom-select"
-          id="exchangeMarket"
+        <p class="form-label">Market type</p>
+        <mat-radio-group
+          aria-label="Market type"
           formControlName="exchangeMarket"
         >
-          <option value="Spot">Spot</option>
-          <option value="Futures">Futures</option>
-        </select>
+          <mat-radio-button value="Spot">Spot</mat-radio-button>
+          <mat-radio-button value="Futures">Future</mat-radio-button>
+        </mat-radio-group>
       </div>
       <div class="mb-3">
         <label for="apiName" class="form-label">Api name</label>

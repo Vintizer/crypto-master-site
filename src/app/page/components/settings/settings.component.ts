@@ -39,7 +39,7 @@ export class SettingsComponent implements OnInit {
 
   initializeForm() {
     this.form = this.formBuilder.group({
-      exchangeMarket: 'spot',
+      exchangeMarket: 'Spot',
       apiName: [''],
       apiKey: [''],
       apiSecret: [''],
@@ -61,34 +61,8 @@ export class SettingsComponent implements OnInit {
 
   onSubmit() {
     const request: ExchangeApi = this.form.value;
-    console.log('request: ', request);
     // TODO unsubscribe all
-    this.exchanges$.pipe(take(1)).subscribe((val) => {
-      if (val?.length === 0) {
-        this.store.dispatch(newApiAction({ newApi: request }));
-      } else {
-        try {
-          const curExchanges: ExchangeApi[] = val || [];
-          const isCopyExchange: ExchangeApi | null =
-            curExchanges.find((s) => {
-              return s.apiKey === request.apiKey;
-            }) || null;
-          if (!isCopyExchange) {
-            this.store.dispatch(newApiAction({ newApi: request }));
-          } else {
-            // TODO
-            // newApiFailureSaveAction({
-            //   errors: { message: ['Key with same api key are saved earler'] },
-            // });
-          }
-        } catch (error) {
-          console.error(error);
-        }
-        // TODO wait server answer
-        this.form.reset();
-        this.form.patchValue({ exchange: 'Binance' });
-      }
-    });
+    this.store.dispatch(newApiAction({ newApi: request }));
   }
   removeKey(name: string): void {
     this.userId$.pipe(take(1)).subscribe((id) => {

@@ -1,4 +1,7 @@
-import { map, Observable, take, filter, of } from 'rxjs';
+import { Order, OrdersStat } from './../../../shared/types/ordersStat';
+import { getTraderOrdersAction } from './../../../auth/store/actions/getTraderOrders.action';
+import { getUserOrdersAction } from './../../../auth/store/actions/getUserOrders.action';
+import { map, Observable, take, filter, of, Subscription } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 
 import { Component, OnInit } from '@angular/core';
@@ -13,6 +16,7 @@ import { updateFeeAction } from '../../../auth/store/actions/updateFee.action';
 import {
   currentUserIdSelector,
   currentUserSelector,
+  userOrdersSelector,
   isTraderSelector,
   subscribedSelector,
   traderFeeSelector,
@@ -24,7 +28,10 @@ import {
 } from '../../../shared/types/currentUser.interface';
 import { PreparedTrader, Trader } from '../../../shared/types/trader.interface';
 import { newSignalAction } from './../../../auth/store/actions/newSignal.action';
-import { apiKeysSelector } from './../../../auth/store/selectors';
+import {
+  apiKeysSelector,
+  traderOrdersSelector,
+} from './../../../auth/store/selectors';
 import { ExchangeApi } from './../../../auth/types/newApiKey.interface';
 import { UtilsService } from './../../../shared/services/utils.service';
 
@@ -37,6 +44,10 @@ export class SignalsComponent implements OnInit {
   public form: FormGroup;
   public isTrader$: Observable<boolean | null>;
   public tradersList$: Observable<Trader[]>;
+  public traderOrders$: Observable<OrdersStat>;
+  public traderOrders: OrdersStat;
+  public userOrders$: Observable<OrdersStat>;
+  public userOrders: OrdersStat;
   public preparedTrader$: Observable<PreparedTrader[]>;
   public subscribed$: Observable<SubscribedOn[]>;
   public traderFee$: Observable<number>;
@@ -48,14 +59,20 @@ export class SignalsComponent implements OnInit {
     private formBuilder: FormBuilder,
     private store: Store,
     private utilsService: UtilsService
-  ) {}
+  ) {
+    this.traderOrders$ = of({ filledOrders: [], openOrders: [] });
+  }
 
   ngOnInit(): void {
     this.initializeForm();
     this.initializeValues();
     this.fetchData();
+    this.subscribe();
   }
-
+  subscribe() {
+    this.traderOrders$.subscribe((d) => (this.traderOrders = d));
+    this.userOrders$.subscribe((d) => (this.userOrders = d));
+  }
   initializeForm() {
     this.form = this.formBuilder.group({
       coin: ['', Validators.required],
@@ -63,6 +80,8 @@ export class SignalsComponent implements OnInit {
       buyPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
       tpPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
       slPrice: ['', [Validators.required, Validators.pattern('^[0-9.]*$')]],
+      marketType: ['Spot'],
+      signalType: ['Long', Validators.required],
     });
   }
 
@@ -70,6 +89,8 @@ export class SignalsComponent implements OnInit {
     this.userId$.pipe(take(1)).subscribe((id) => {
       if (id != null) {
         this.store.dispatch(getTradersAction({ userId: id }));
+        this.store.dispatch(getTraderOrdersAction({ traderId: id }));
+        this.store.dispatch(getUserOrdersAction({ userId: id }));
       }
     });
     this.preparedTrader$ = this.subscribed$.pipe(
@@ -105,6 +126,8 @@ export class SignalsComponent implements OnInit {
     this.isTrader$ = this.store.pipe(select(isTraderSelector));
     this.apiKeys$ = this.store.pipe(select(apiKeysSelector));
     this.tradersList$ = this.store.pipe(select(tradersListSelector));
+    this.traderOrders$ = this.store.pipe(select(traderOrdersSelector));
+    this.userOrders$ = this.store.pipe(select(userOrdersSelector));
     this.subscribed$ = this.store.pipe(select(subscribedSelector));
     this.traderFee$ = this.store.pipe(select(traderFeeSelector));
     this.userId$ = this.store.pipe(select(currentUserIdSelector));
@@ -117,12 +140,17 @@ export class SignalsComponent implements OnInit {
       }
     });
   }
-  subscribeTrader(traderId: string, wallet: string) {
+  subscribeTrader(traderId: string, wallet: string, apiName: string) {
     if (wallet != null && wallet !== '') {
       this.userId$.pipe(take(1)).subscribe((id) => {
         if (id != null) {
           this.store.dispatch(
-            subscribeTraderAction({ userId: id, traderId, walletSize: wallet })
+            subscribeTraderAction({
+              userId: id,
+              traderId,
+              walletSize: wallet,
+              apiName,
+            })
           );
         }
       });
@@ -148,6 +176,7 @@ export class SignalsComponent implements OnInit {
     }
   }
   onSubmit() {
+    console.log('this.form.value: ', this.form.value);
     this.userId$.pipe(take(1)).subscribe((id) => {
       if (id != null) {
         this.store.dispatch(
@@ -161,7 +190,7 @@ export class SignalsComponent implements OnInit {
   async onCoinChange() {
     const { coin, baseCoin } = this.form.value;
     if (coin != '' && baseCoin != '') {
-      this.price$ = this.utilsService.getCoinPrice(coin, baseCoin);
+      this.price$ = await this.utilsService.getCoinPrice(coin, baseCoin);
     } else {
       this.price$ = of('');
     }
@@ -172,16 +201,61 @@ export class SignalsComponent implements OnInit {
     });
   }
   clickTpPrice(perc: number) {
-    this.price$.pipe(take(1)).subscribe((pr) => {
-      this.form.patchValue({ tpPrice: Number(pr) * (1 + perc / 100) });
+    this.form.patchValue({
+      tpPrice: Number(this.form.value.buyPrice) * (1 + perc / 100),
     });
   }
   clickSlPrice(perc: number) {
-    this.price$.pipe(take(1)).subscribe((pr) => {
-      this.form.patchValue({ slPrice: Number(pr) * (1 - perc / 100) });
+    this.form.patchValue({
+      slPrice: Number(this.form.value.buyPrice) * (1 - perc / 100),
     });
   }
   get f() {
     return this.form.controls;
+  }
+  getApiName(traderId: string): Observable<string> {
+    return this.subscribed$.pipe(
+      take(1),
+      map((subscribed) => {
+        return (
+          subscribed.find((subscribe) => subscribe.traderId === traderId)
+            ?.apiName || ''
+        );
+      })
+    );
+  }
+  isShowUserOrders(): Observable<boolean> {
+    return this.userOrders$.pipe(
+      take(1),
+      map(
+        (orders) =>
+          orders.filledOrders.length > 0 || orders.openOrders.length > 0
+      )
+    );
+  }
+  isShowTraderOrders(): Observable<boolean> {
+    return this.traderOrders$.pipe(
+      take(1),
+      map(
+        (orders) =>
+          orders.filledOrders.length > 0 || orders.openOrders.length > 0
+      )
+    );
+  }
+  countProfit(order: Order) {
+    const { orderType, amount, priceExec, takePrice = 0 } = order;
+    let val = 0;
+    if (orderType === 'long') {
+      val = (takePrice - priceExec) * amount;
+    } else {
+      val = (-takePrice + priceExec) * amount;
+    }
+    const perc = (val / priceExec / amount) * 100;
+    return { val: val.toFixed(6), perc: perc.toFixed(2) };
+  }
+  setSignalType() {
+    if (this.form.value.marketType === 'Spot') {
+      this.form.patchValue({ signalType: 'Long' });
+    }
   }
 }

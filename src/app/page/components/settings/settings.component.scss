@@ -8,3 +8,7 @@
 [type="submit"] {
   margin-bottom: 20px;
 }
+
+.mat-radio-button ~ .mat-radio-button {
+  margin-left: 16px;
+}

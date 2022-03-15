@@ -1,0 +1,82 @@
+<p>Orders Stat</p>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Open/Closed</th>
+      <th scope="col">Open price</th>
+      <th scope="col">Filled price</th>
+      <th scope="col">Order type</th>
+      <th scope="col">User</th>
+      <th scope="col">Amount</th>
+      <th scope="col">Profit</th>
+      <th scope="col">Profit, %</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr
+      *ngFor="let order of tableData.filledOrders; let i = index"
+      class="filledOrder"
+    >
+      <th scope="row">{{ i + 1 }}</th>
+      <td>Closed</td>
+      <td>
+        <span type="text">{{ order.priceExec }}</span>
+      </td>
+      <td>
+        <span type="text">{{ order.takePrice }}</span>
+      </td>
+      <td>
+        <span type="text">{{ order.orderType }}</span>
+      </td>
+      <td>
+        <span type="text">
+          {{ order.humanId | slice: 0:3 }}***{{
+            order.humanId | slice: -3
+          }}</span
+        >
+      </td>
+      <td>
+        <span type="text">{{ order.amount }}</span>
+      </td>
+      <td>
+        <span type="text">{{ countProfit(order).val }}</span>
+      </td>
+      <td>
+        <span type="text">{{ countProfit(order).perc }}</span>
+      </td>
+    </tr>
+    <tr
+      *ngFor="let order of tableData.openOrders; let i = index"
+      class="openOrder"
+    >
+      <th scope="row">{{ i + 1 }}</th>
+      <td>Open</td>
+      <td>
+        <span type="text">{{ order.priceExec }}</span>
+      </td>
+      <td>
+        <span type="text">{{ order.takePrice }}</span>
+      </td>
+      <td>
+        <span type="text">{{ order.orderType }}</span>
+      </td>
+      <td>
+        <span type="text">
+          {{ order.humanId | slice: 0:3 }}***{{
+            order.humanId | slice: -3
+          }}</span
+        >
+      </td>
+      <td>
+        <span type="text">{{ order.amount }}</span>
+      </td>
+      <td>
+        <span type="text">---</span>
+      </td>
+      <td>
+        <span type="text">---</span>
+      </td>
+    </tr>
+  </tbody>
+</table>

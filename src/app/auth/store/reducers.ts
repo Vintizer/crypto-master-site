@@ -1,42 +1,66 @@
-import { createReducer, on, Action } from '@ngrx/store';
-
-import { AuthStateInterface } from 'src/app/auth/types/authState.interface';
+import { Action, createReducer, on } from '@ngrx/store';
+import {
+  getCurrentUserAction,
+  getCurrentUserFailureAction,
+  getCurrentUserSuccessAction,
+} from 'src/app/auth/store/actions/getCurrentUser.action';
+import {
+  getTradersAction,
+  getTradersFailureAction,
+  getTradersSuccessAction,
+} from 'src/app/auth/store/actions/getTraders.action';
 import {
   loginAction,
-  loginSuccessAction,
   loginFailureAction,
+  loginSuccessAction,
 } from 'src/app/auth/store/actions/login.action';
+import { AuthStateInterface } from 'src/app/auth/types/authState.interface';
 import {
   forgetPasswordAction,
   forgetPasswordFailureAction,
   forgetPasswordSuccessAction,
 } from './actions/forgetPassword.action';
 import {
-  newPasswordAction,
-  newPasswordSuccessAction,
-  newPasswordFailureAction,
-} from './actions/newPassword.action';
+  getTraderOrdersAction,
+  getTraderOrdersFailureAction,
+  getTraderOrdersSuccessAction,
+} from './actions/getTraderOrders.action';
 import {
-  signupAction,
-  signupSuccessAction,
-  signupFailureAction,
-} from './actions/signup.action';
+  getUserOrdersAction,
+  getUserOrdersFailureAction,
+  getUserOrdersSuccessAction,
+} from './actions/getUserOrders.action';
 import { logoutAction } from './actions/logout.action';
-import {
-  newApiAction,
-  newApiFailureAction,
-  newApiSuccessAction,
-} from './actions/newApiKey.action';
 import {
   makeTraderAction,
   makeTraderFailureAction,
   makeTraderSuccessAction,
 } from './actions/makeTrader.action';
 import {
-  getCurrentUserAction,
-  getCurrentUserSuccessAction,
-  getCurrentUserFailureAction,
-} from 'src/app/auth/store/actions/getCurrentUser.action';
+  newApiAction,
+  newApiFailureAction,
+  newApiSuccessAction,
+} from './actions/newApiKey.action';
+import {
+  newPasswordAction,
+  newPasswordFailureAction,
+  newPasswordSuccessAction,
+} from './actions/newPassword.action';
+import {
+  newSignalAction,
+  newSignalFailureAction,
+  newSignalSuccessAction,
+} from './actions/newSignal.action';
+import {
+  removeApiKeyAction,
+  removeApiKeyFailureAction,
+  removeApiKeySuccessAction,
+} from './actions/removeApiKey.action';
+import {
+  signupAction,
+  signupFailureAction,
+  signupSuccessAction,
+} from './actions/signup.action';
 import {
   subscribeTraderAction,
   subscribeTraderFailureAction,
@@ -52,21 +76,6 @@ import {
   updateFeeFailureAction,
   updateFeeSuccessAction,
 } from './actions/updateFee.action';
-import {
-  newSignalAction,
-  newSignalFailureAction,
-  newSignalSuccessAction,
-} from './actions/newSignal.action';
-import {
-  removeApiKeyAction,
-  removeApiKeyFailureAction,
-  removeApiKeySuccessAction,
-} from './actions/removeApiKey.action';
-import {
-  getTradersAction,
-  getTradersSuccessAction,
-  getTradersFailureAction,
-} from 'src/app/auth/store/actions/getTraders.action';
 
 const initialState: AuthStateInterface = {
   isSubmitting: false,
@@ -75,6 +84,8 @@ const initialState: AuthStateInterface = {
   validationErrors: null,
   isLoggedIn: null,
   tradersList: [],
+  traderOrders: { filledOrders: [], openOrders: [] },
+  userOrders: { filledOrders: [], openOrders: [] },
 };
 
 const authReducer = createReducer(
@@ -357,6 +368,44 @@ const authReducer = createReducer(
   ),
   on(
     removeApiKeyFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    getTraderOrdersAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    getTraderOrdersSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      traderOrders: action.ordersStat,
+    })
+  ),
+  on(
+    getTraderOrdersFailureAction,
+    (state): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+    })
+  ),
+  on(
+    getUserOrdersAction,
+    (state): AuthStateInterface => ({ ...state, isLoading: true })
+  ),
+  on(
+    getUserOrdersSuccessAction,
+    (state, action): AuthStateInterface => ({
+      ...state,
+      isLoading: false,
+      userOrders: action.ordersStat,
+    })
+  ),
+  on(
+    getUserOrdersFailureAction,
     (state): AuthStateInterface => ({
       ...state,
       isLoading: false,

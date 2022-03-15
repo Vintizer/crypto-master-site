@@ -64,3 +64,15 @@ export const apiKeysSelector = createSelector(
   authFeatureSelector,
   (authState: AuthStateInterface) => authState.currentUser?.exchanges || []
 );
+
+export const traderOrdersSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) =>
+    authState.traderOrders || { filledOrders: [], openOrders: [] }
+);
+
+export const userOrdersSelector = createSelector(
+  authFeatureSelector,
+  (authState: AuthStateInterface) =>
+    authState.userOrders || { filledOrders: [], openOrders: [] }
+);

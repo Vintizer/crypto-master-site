@@ -1,3 +1,4 @@
+import { OrdersStat } from './../../shared/types/ordersStat';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, take } from 'rxjs';
@@ -134,11 +135,12 @@ export class AuthService {
   subscribeTrader(
     userId: string,
     traderId: string,
-    walletSize: string
+    walletSize: string,
+    apiName: string
   ): Observable<CurrentUserInterface> {
     const url = `${environment.apiUrl}/users/${userId}`;
     return this.http.patch<CurrentUserInterface>(url, {
-      subscribedOn: { traderId, walletSize },
+      subscribedOn: { traderId, walletSize, apiName },
     });
   }
   unSubscribeTrader(
@@ -162,6 +164,15 @@ export class AuthService {
     const url = `${environment.apiUrl}/users/traders/${userId}`;
     return this.http.get<Trader[]>(url);
   }
+  getUserOrders(userId: string): Observable<OrdersStat> {
+    const url = `${environment.apiUrl}/order/user/${userId}`;
+    return this.http.get<OrdersStat>(url);
+  }
+  getTraderOrders(traderId: string): Observable<OrdersStat> {
+    const url = `${environment.apiUrl}/order/trader/${traderId}`;
+    return this.http.get<OrdersStat>(url);
+  }
+
   newSignal(signal: SignalInterface): any {
     const url = `${environment.apiUrl}/signals`;
     return this.http.post<SignalInterface>(url, signal);

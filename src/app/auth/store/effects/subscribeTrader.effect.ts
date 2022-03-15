@@ -20,9 +20,9 @@ export class SubscribeTraderEffect {
   subscribeTrader$ = createEffect((): any =>
     this.actions$.pipe(
       ofType(subscribeTraderAction),
-      switchMap(({ userId, traderId, walletSize }) => {
+      switchMap(({ userId, traderId, walletSize, apiName }) => {
         return this.authService
-          .subscribeTrader(userId, traderId, walletSize)
+          .subscribeTrader(userId, traderId, walletSize, apiName)
           .pipe(
             map((currentUser: CurrentUserInterface) => {
               return subscribeTraderSuccessAction({ currentUser });

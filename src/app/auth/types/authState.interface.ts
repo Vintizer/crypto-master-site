@@ -1,3 +1,4 @@
+import { OrdersStat } from './../../shared/types/ordersStat';
 import { BackendErrorsInterface } from 'src/app/shared/types/backendErrors.interface';
 import { AuthResponseInterface } from 'src/app/auth/types/authResponse.interface';
 import { CurrentUserInterface } from 'src/app/shared/types/currentUser.interface';
@@ -10,4 +11,6 @@ export interface AuthStateInterface {
   validationErrors: BackendErrorsInterface | null;
   isLoading: boolean;
   tradersList: Trader[];
+  traderOrders: OrdersStat;
+  userOrders: OrdersStat;
 }

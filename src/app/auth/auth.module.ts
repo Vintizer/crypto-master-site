@@ -1,3 +1,5 @@
+import { GetUserOrdersEffect } from './store/effects/getUserOrders.effect';
+import { GetTraderOrdersEffect } from './store/effects/getTraderOrders.effect';
 import { PersistanceService } from 'src/app//shared/services/persistance.service';
 import { ForgetPassComponent } from 'src/app/auth/components/forget-pass/forget-pass.component';
 import { LoginComponent } from 'src/app/auth/components/login/login.component';
@@ -57,6 +59,8 @@ const routes: Routes = [
       SignupEffect,
       GetCurrentUserEffect,
       LogoutEffect,
+      GetTraderOrdersEffect,
+      GetUserOrdersEffect,
       GetTradersListEffect,
       UnSubscribeTraderEffect,
       NewApiEffect,

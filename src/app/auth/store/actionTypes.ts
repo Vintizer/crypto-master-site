@@ -34,6 +34,14 @@ export enum ActionTypes {
   GET_TRADERS_SUCCESS = '[Request] Get traders success',
   GET_TRADERS_FAILURE = '[Request] Get traders failure',
 
+  GET_TRADER_ORDERS = '[Request] Get trader orders',
+  GET_TRADER_ORDERS_SUCCESS = '[Request] Get trader orders success',
+  GET_TRADER_ORDERS_FAILURE = '[Request] Get trader orders failure',
+
+  GET_USER_ORDERS = '[Request] Get user orders',
+  GET_USER_ORDERS_SUCCESS = '[Request] Get user orders success',
+  GET_USER_ORDERS_FAILURE = '[Request] Get user orders failure',
+
   SUBSCRIBE_TRADER = '[Request] Subscribe trader',
   SUBSCRIBE_TRADER_SUCCESS = '[Request] Subscribe trader success',
   SUBSCRIBE_TRADER_FAILURE = '[Request] Subscribe trader failure',
