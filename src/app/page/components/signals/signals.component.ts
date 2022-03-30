@@ -188,9 +188,18 @@ export class SignalsComponent implements OnInit {
     });
   }
   async onCoinChange() {
-    const { coin, baseCoin } = this.form.value;
+    const { coin, baseCoin, marketType } = this.form.value;
+    console.log('coin: ', coin);
+    console.log('baseCoin: ', baseCoin);
+    console.log('marketType: ', marketType);
     if (coin != '' && baseCoin != '') {
-      this.price$ = await this.utilsService.getCoinPrice(coin, baseCoin);
+      console.log('starp price');
+      this.price$ = await this.utilsService.getCoinPrice(
+        coin,
+        baseCoin,
+        marketType
+      );
+      console.log('end price');
     } else {
       this.price$ = of('');
     }

@@ -26,9 +26,10 @@
               aria-label="Market type"
               formControlName="marketType"
               (change)="setSignalType()"
+              (change)="onCoinChange()"
             >
               <mat-radio-button value="Spot">Spot</mat-radio-button>
-              <mat-radio-button value="Future">Future</mat-radio-button>
+              <mat-radio-button value="Futures">Futures</mat-radio-button>
             </mat-radio-group>
           </div>
           <div class="mb-3">
@@ -76,13 +77,16 @@
               </div>
             </div>
           </div>
-          <p *ngIf="price$ | async">
-            Current price is
+          <p>
+            <span *ngIf="price$ | async">Current price is </span>
             <a class="clickPrice" (click)="clickPrice()">{{
               price$ | async
             }}</a>
-            {{ form.value.coin }}/{{ form.value.baseCoin }}
+            <span *ngIf="price$ | async">
+              {{ form.value.coin }}/{{ form.value.baseCoin }}
+            </span>
           </p>
+
           <div class="mb-3">
             <div class="row">
               <div class="col">
