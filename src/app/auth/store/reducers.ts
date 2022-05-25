@@ -155,14 +155,13 @@ const authReducer = createReducer(
       currentUser: action.currentUser,
     })
   ),
-  on(
-    loginFailureAction,
-    (state, action): AuthStateInterface => ({
+  on(loginFailureAction, (state, action): AuthStateInterface => {
+    return {
       ...state,
       isSubmitting: false,
       validationErrors: action.errors,
-    })
-  ),
+    };
+  }),
   on(
     newPasswordAction,
     (state): AuthStateInterface => ({

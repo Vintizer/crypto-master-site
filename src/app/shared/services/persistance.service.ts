@@ -20,7 +20,10 @@ export class PersistanceService {
 
   get(key: string): any {
     try {
-      return JSON.parse(localStorage.getItem(key) || '');
+      const item = localStorage.getItem(key);
+      if (item != null) {
+        return JSON.parse(item);
+      }
     } catch (e) {
       console.error('Error getting data from localStorage', e);
       return null;

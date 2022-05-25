@@ -31,10 +31,12 @@ export class LoginEffect {
             return loginSuccessAction({ currentUser });
           }),
           catchError((errorResponse: HttpErrorResponse) => {
-            console.log('errorResponse: ', errorResponse);
             return of(
               loginFailureAction({
-                errors: errorResponse.error.message,
+                errors: {
+                  ...errorResponse.error,
+                  message: errorResponse.message.split("http")[0],
+                },
               })
             );
           })
